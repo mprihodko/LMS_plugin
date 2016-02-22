@@ -1,0 +1,60 @@
+#wp_custom_attachment{
+	.video_inputs{		
+		.inputs_data{	
+			display: table;
+   			width: 100%;
+   			padding: 20px 0;
+			.tb_td{
+				display: table-cell;
+				vertical-align: middle;
+				margin: @margin-standart/2 @margin-standart;
+				text-align: center;
+				input{				
+					float: left;
+					padding: @margin-standart;
+					margin: @margin-standart/2;
+				}							
+				input[type="text"]{
+					display: none;
+				}
+				span{	
+					display: block;				
+    				margin-top: 3px;
+				}
+			}
+		}
+		.param_data{
+			display: table;
+   			width: 100%;	
+			input{
+				display: table-cell;
+				vertical-align: middle;
+				float: left;
+				padding: @margin-standart;
+				margin: @margin-standart/2;
+			}
+		}
+		.select_type_video{
+			display: inline-block;
+			width: 150px;
+			border: 1px solid #cfcfcf;
+			padding: 0;	
+			div.url,
+			div.file{				
+				display: inline-block;
+				padding: @margin-standart 0px;
+				width: 50%;
+				float: left;
+				text-align: center;	
+				&:hover{
+					cursor: pointer;
+					text-decoration: underline;
+				}			
+			}			
+			div.active{
+				background: @button-color;
+				color: @active-color-text;
+			}
+		}
+	}
+}

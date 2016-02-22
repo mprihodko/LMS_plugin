@@ -1,0 +1,196 @@
+body.toplevel_page_lms_groups #wpcontent{
+	padding: 0;
+	#admin_groups{
+	display: block;
+	width: 100%;
+	float: left;
+	margin: 0;
+	.title_page_groups{
+		margin: 0 0 @margin-standart 0 ;
+		padding: 0 2%;
+		line-height: @line-height*2;
+		background: @section-title-background;
+		color: @section-title-color;
+		font-size: @title-box-font-size+8;
+		display: table;
+		width: 96%;
+		span{
+			display: table-cell;
+			vertical-align: middle;
+			text-align: left;
+
+		}
+		.add-new-group{
+		    float: right;
+		    display: inline;
+		    vertical-align: middle;
+		    text-align: right;
+		    padding: 10px 20px;
+		    margin: 10px 0;
+		    background: @button-color;
+		    color: @section-title-color;
+		    font-weight: bolder;
+		    font-size: @title-box-font-size+(-6);
+		    text-decoration: none;
+			&:hover{
+				opacity: 0.7;
+			}
+			&:after{
+				content: "\f067";		
+				color: @section-title-color;
+				display: inline-block;
+				font: normal normal normal 14px/1 FontAwesome;
+				font-size: inherit;
+				text-rendering: auto;
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+				transform: translate(0, 0);	
+				margin: @margin-standart/2;	
+			}
+		}
+	}
+		ul{
+			width: 100%;
+			float: left;
+			#group-header{	
+				width: 100%;
+				float: left;
+				padding: 0;
+				margin: 0;		
+				ul.group-header-titles{
+					padding: @margin-standart*2 0;
+					margin: 0;
+					color: @section-title-color;
+					width: 100%;
+					float: left;
+					background: @button-color;
+					display: table;
+					li{
+						color: @section-title-color;
+						font-size: @title-box-font-size; 
+						font-weight: bold;
+						display: table-cell;
+						vertical-align: middle;
+						padding: 0;
+						margin: 0;
+						text-align: center;
+						box-sizing: border-box;
+						&.id{
+							width: 5%;
+						}
+						&.name{
+							width: 30%;
+						}
+						&.view_limit{
+							width: 10%;
+						}
+						&.owner{
+							width: 30%;
+						}
+						&.actions{
+							width: 25%;
+						}	
+					}
+				}
+			}
+			.group_row{
+				width: 100%;
+				float: left;
+				padding: 0;
+				margin: 0;
+				background: @second-table-row-background;
+				&:nth-child(2n){
+					background: @section-title-color;	
+				}
+				&:hover{
+					// background: @table-row-hover;
+					cursor: pointer;	
+				}
+				&.removed{
+					background:rgba(255, 0, 0, 0.53)!important;
+				}
+				ul.group-data-list{
+					width: 100%;
+					float: left;
+					padding: @margin-standart 0;				
+					border-bottom: 2px solid @border-color;	
+					display: table;					
+					li{					
+						padding: 0 @margin-standart*1.5;							
+						box-sizing: border-box;
+						display: table-cell;
+						vertical-align: middle;
+						text-align: center;
+						font-size: 16px;
+						a{
+							text-decoration: none;
+							&:hover{
+								text-decoration: underline;
+							}
+						}
+						&.id{
+							width: 5%;
+						}
+						&.name{
+							width: 30%;
+						}
+						&.view_limit{
+							width: 10%;
+						}
+						&.owner{
+							width: 30%;
+						}
+						&.actions{
+							width: 25%;
+							a{
+								color:@section-title-color;
+								text-decoration: none;
+								display: inline; 
+								margin: 0 @margin-standart;
+								padding: @margin-standart/2 @margin-standart;
+								&:hover{
+									opacity: 0.7;
+									text-decoration: underline;								
+								} 
+								&.delButton{
+									background: @delete-button; 
+								}
+								&.group_restore{
+									background: #15AB2D;
+								}
+								&.viewButton{
+									background: @button-color;
+								}
+							}
+						}					
+					}				
+				}
+			}
+		}
+		.group_pagination{
+			display: table;
+			width: 100%;
+			.page_icon{
+				display: inline-block;
+				margin: 0 @margin-standart/2;
+				padding: @margin-standart 0;
+				width: 40px;
+				text-align: center;
+				border: 1px solid @border-color;
+				font-size: @title-box-font-size+(-8);
+				color: @active-color-text;
+			}
+			span{
+				background: @section-title-background;
+			}	
+			a{		
+				background: @button-color;	
+				text-decoration: none;
+				&:hover{
+					text-decoration: underline;
+					opacity: 0.7;
+				}
+			}
+		}
+	}
+}
