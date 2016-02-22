@@ -5,7 +5,7 @@ Plugin Script: instructlms.php
 Plugin URI: http://edangollc.com
 Description: LMS.
 Version: 0.1a
-Author: eDango LLC
+Author: E Dango LLC
 Author URI: http://edangollc.com
 */
 define('LMS_DIR', dirname(__FILE__) );
