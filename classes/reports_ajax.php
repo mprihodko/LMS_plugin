@@ -65,27 +65,25 @@ new Get_Report_Users('search_users_report');
 class Get_Reports_By_Group extends AJAX_Handler{
 
 	function callback(){
-		$groups_id=$_POST['data_value'];
-		if(!is_array($groups_id)) return;
+		if(isset($_POST['data_value']))
+			$groups_id=$_POST['data_value'];
+		// if(!is_array($groups_id)) return;
 
 		/*define filters*/		
 		$filter['attempts']=strip_tags(trim($_POST['attempts']));
 		$filter['hits']=strip_tags(trim($_POST['hits']));
 		$filter['date_from']=strip_tags(trim($_POST['day_from']));
 		$filter['date_to']=strip_tags(trim($_POST['day_to']));
+		if(isset($groups_id)):
+			$group_results=$GLOBALS['reports']->get_group_reports($groups_id);
+		else:
+			$group_results=$GLOBALS['reports']->get_all_reports();
+		endif;
 
-		// var_dump($filter);
-		$tests=$GLOBALS['tests']->get_group_tests($groups_id);
-		foreach ($tests as $key => $value) {
-			$test_results[$value->ID]=$GLOBALS['reports']->get_group_tests_reports($value->ID)[$value->ID];
-			$test_results[$value->ID]['test_info']=$value;
-		}
-		// var_dump($test_results);
-		/* parse data tests */
-		$response=$GLOBALS['reports']->generate_report_table($test_results, $filter);
-		/*encode json response*/	
-
-		echo json_encode($response);		
+		$table=$GLOBALS['reports']->generate_report_table($group_results, $filter);
+		
+		/*encode json response*/
+		echo json_encode($table);		
 		die;
 	}
 }
@@ -95,24 +93,25 @@ new Get_Reports_By_Group('get_reports_group_report');
 class Get_Reports_By_User extends AJAX_Handler{
 
 	function callback(){
-		$user_id=$_POST['data_value'];
-		if(!is_array($user_id)) return;
+		if(isset($_POST['data_value']))
+			$user_id=$_POST['data_value'];		
 
 		/*define filters*/		
 		$filter['attempts']=strip_tags(trim($_POST['attempts']));
 		$filter['hits']=strip_tags(trim($_POST['hits']));
 		$filter['date_from']=strip_tags(trim($_POST['day_from']));
 		$filter['date_to']=strip_tags(trim($_POST['day_to']));
-
-		$tests=$GLOBALS['users']->get_user_test_report($user_id);
-		foreach ($tests as $key => $value) {
-			$test_results[$key]=$value;
-			$test_results[$key]['test_info']=get_post($key);
-		}
-		/* parse data tests */
-			$response=$GLOBALS['reports']->generate_report_table($test_results, $filter);
 		
-		echo json_encode($response);		
+		if(isset($user_id)):
+			$user_results=$GLOBALS['reports']->get_user_reports($user_id);
+		else:
+			$user_results=$GLOBALS['reports']->get_all_reports();
+		endif;
+
+		$table=$GLOBALS['reports']->generate_report_table($user_results, $filter);
+
+		/*encode json response*/	
+		echo json_encode($table);		
 		die;
 	}
 }
@@ -123,26 +122,25 @@ new Get_Reports_By_User('get_reports_user_report');
 class Get_Reports_By_Test extends AJAX_Handler{
 
 	function callback(){
-		$test_id=$_POST['data_value'];
-		if(!is_array($test_id)) return;
+		if(isset($_POST['data_value']))
+			$test_id=$_POST['data_value'];		
 
 		/*define filters*/		
 		$filter['attempts']=strip_tags(trim($_POST['attempts']));
 		$filter['hits']=strip_tags(trim($_POST['hits']));
 		$filter['date_from']=strip_tags(trim($_POST['day_from']));
 		$filter['date_to']=strip_tags(trim($_POST['day_to']));
-
 		
-		foreach ($test_id as $key => $value) {
-			$test_results[$value]=$GLOBALS['reports']->get_group_tests_reports($value)[$value];
-			$test_results[$value]['test_info']=get_post($value);
-		}
-		// var_dump($test_results)
-		/* parse data tests */
-			$response=$GLOBALS['reports']->generate_report_table($test_results, $filter);
-		/*encode json response*/
-		// var_dump($test_results);
-		echo json_encode($response);		
+		if(isset($test_results)):
+			$test_results=$GLOBALS['reports']->get_test_reports($test_id);
+		else:
+			$test_results=$GLOBALS['reports']->get_all_reports();
+		endif;
+
+		$table=$GLOBALS['reports']->generate_report_table($test_results, $filter);
+		
+		/*encode json response*/		
+		echo json_encode($table);		
 		die;
 	}
 }
@@ -156,14 +154,18 @@ class Hits_Add extends AJAX_Handler{
 	function callback(){
 		$test_id=$_GET['test_id'];
 		$user_id=$_GET['user_id'];
+		$group_id=(($_SESSION['current_group']=="administrator")? 0 : $_SESSION['current_group']);
 		$query=$this->db->insert($this->db->prefix."lms_test_hits", array(	"test_id"=>$test_id,
+																	"group_id"=>$group_id,
 																	"user_id"=>$user_id,
 																	"time"=>date("Y-m-d H:i:s")		 
 																	) 
 						);	
 		if($query){
 			echo json_encode(array("success"=>"success"));
-		}		
+		}else{
+			echo json_encode(array("success"=>"fail"));
+		}	
 		die;
 	}
 }

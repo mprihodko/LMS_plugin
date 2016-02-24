@@ -24,8 +24,14 @@ class Templates {
 
 
 	public function page_templates($template){
-		if(is_archive("lms_test") || (is_archive("lms_test") && isset($_GET['group_name']))){
+		if(!is_user_logged_in() && !is_page('login') && !is_front_page()){
+			wp_redirect(home_url('login'));
+		}
+		if((is_archive("lms_test") && $this->userrole=='administrator') || (is_archive("lms_test") && isset($_GET['group_name']))){
 			$template=TPL_DIR."test_archive.php";
+		}
+		if((is_archive("lms_test") && !isset($_GET['group_name']) && $this->userrole!='administrator' )){
+			$template=TPL_DIR."groups.php";
 		}
 		if(is_page('groups')){	
 			$template=TPL_DIR."groups.php";
@@ -44,6 +50,7 @@ class Templates {
 				$query->set('post__in', array(0));
 				return $query;
 			}
+			
 			foreach ($groups as $key => $value) {
 				$group_id[$key]=$value->group_id;
 			}			
@@ -52,7 +59,8 @@ class Templates {
 			}else{
 				$query_param=$group_id;
 			}
-			$rows=$this->db->get_results("SELECT `test_id` FROM ".$this->db->prefix."lms_group_tests WHERE group_id=".$query_param);	    	
+			$rows=$this->db->get_results("SELECT `test_id` FROM ".$this->db->prefix."lms_group_tests WHERE group_id=".$query_param);
+			    	
 	    	$arr=array();
 	    	foreach ($rows as $key => $value) {
 	    		$arr[]=$value->test_id;
@@ -62,7 +70,7 @@ class Templates {
 			}
 			else{				
 				$query->set('post__in', array(0));
-			}
+			}			
 		}
 
 		if(is_archive("lms_test") && $query->is_main_query() && isset($_GET['group_name'])){

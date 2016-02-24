@@ -10,13 +10,15 @@
 <?php $segments=get_post_meta(get_the_ID(), 'lms_interactive_status', true); ?>
 
 <?php get_header(); ?>
-
+<?php if($group_id=$GLOBALS['groups']->identify_group()): ?>
 <div class='lms'>
 	<h2 class="page-title-groups"><?=the_title();?></h2>	
 
 	<!-- BEFORE MEDIA ITEMS -->
-	<?php if(isset($_GET['part']) && $_GET['part']=='before'): ?>	
+	<?php if(isset($_GET['part']) && $_GET['part']=='before' && $GLOBALS['users']->have_views($post->ID, $group_id)): ?>	
 		<?php include(TPL_DIR."loops/media_tpl.php");?>	
+	<?php elseif(isset($_GET['part']) && $_GET['part']=='before' && !$GLOBALS['users']->have_views($post->ID, $group_id)): ?>
+		<?php include(TPL_DIR."loops/sorry_page.php");?>		
 	<?php endif; ?>
 	<!-- BEFORE MEDIA ITEMS -->
 
@@ -24,32 +26,37 @@
 	<?php if($segments=='on' && isset($_GET['part']) && $_GET['part']=='interaction'): ?>
 		<div class="interaction_course" id="interaction_course">
 			<?php require_once(TPL_DIR."loops/interaction.php");?>
-		</div>
+		</div>		
 	<?php endif; ?>
 	<!-- INTERACTION -->
 
 	<!-- VIDEO PARTS -->
-	<?php if(isset($_GET['part']) && $_GET['part']=='video'): ?>
+
+	<?php if(isset($_GET['part']) && $_GET['part']=='video' && $GLOBALS['users']->have_views($post->ID, $group_id)): ?>
 		<?php $video=$GLOBALS['tests']->the_video(); ?>
-		<?php require_once(TPL_DIR."loops/test_video.php");?>	
+		<?php require_once(TPL_DIR."loops/test_video.php");?>		
 	<?php endif; ?>
 	<!-- VIDEO PARTS -->
 
 	<!-- AFTER MEDIA ITEMS -->
-	<?php if(isset($_GET['part']) && $_GET['part']=='after'): ?>	
-		<?php include(TPL_DIR."loops/media_tpl.php");?>	
+	<?php if(isset($_GET['part']) && $_GET['part']=='after' && $GLOBALS['users']->have_views($post->ID, $group_id) ): ?>	
+		<?php include(TPL_DIR."loops/media_tpl.php");?>		
 	<?php endif; ?>
 	<!-- AFTER MEDIA ITEMS -->
 
 	<!-- QUESTIONS PART -->
-	<?php if(isset($_GET['part']) && $_GET['part']=='questions'): ?>	
-		<?php include(TPL_DIR."loops/questions.php");?>	
+	<?php if(isset($_GET['part']) && $_GET['part']=='questions' && $GLOBALS['users']->have_attempts($post->ID, $group_id)): ?>	
+		<?php include(TPL_DIR."loops/questions.php");?>
+	<?php elseif(isset($_GET['part']) && $_GET['part']=='questions' && !$GLOBALS['users']->have_attempts($post->ID, $group_id)): ?>
+		<?php include(TPL_DIR."loops/sorry_page.php");?>		
 	<?php endif; ?>
 	<!-- QUESTIONS PART -->
 
 	<!-- RESULTS PART -->
-	<?php if(isset($_GET['part']) && $_GET['part']=='results'): ?>	
+	<?php if(isset($_GET['part']) && $_GET['part']=='results' && $GLOBALS['users']->have_attempts($post->ID, $group_id)): ?>	
 		<?php include(TPL_DIR."loops/results.php");?>	
+	<?php elseif(isset($_GET['part']) && $_GET['part']=='results' && !$GLOBALS['users']->have_attempts($post->ID, $group_id)): ?>
+		<?php include(TPL_DIR."loops/sorry_page.php");?>		
 	<?php endif; ?>
 	<!-- RESULTS PART -->
 
@@ -57,10 +64,10 @@
 	<?php if(isset($_GET['part']) && $_GET['part']=='certificate'): ?>	
 		<?php include(TPL_DIR."loops/certificate.php");?>	
 	<?php endif; ?>	
-
+	<!-- CERTIFICATE -->
 	
 
-	<!-- CERTIFICATE -->
+
 	<?php if(isset($_GET['part'])
 		  && $_GET['part']!='interaction'
 		  && $_GET['part']!='questions'
@@ -72,5 +79,7 @@
 		</div>
 	<?php endif; ?>
 </div>
-
+<?php else: ?>
+	<?php include(TPL_DIR."loops/sorry_page.php");?>	
+<?php endif; ?>
 <?php get_footer(); ?>

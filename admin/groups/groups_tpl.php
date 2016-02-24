@@ -8,7 +8,7 @@
 			<ul class="group-header-titles">
 				<li class="id">ID</li>
 				<li class="name">Title</li>
-				<li class="view_limit">View Limit</li>
+				<li class="view_limit">Views</li>
 				<li class="owner">Owner</li>
 				<li class="actions">Actions</li>
 			</ul>
@@ -28,7 +28,7 @@
 						<?php endif; ?>
 						</li>
 						<li class="view_limit">
-							<?=$group_data->view_limit?>
+							<?=$GLOBALS['reports']->get_used_views($group_data->group_id)?>/<?=$group_data->view_limit?>
 						</li>
 						<li class="owner">
 							<a href="<?=admin_url('user-edit.php?user_id='.$group_data->user_id)?>">
@@ -45,7 +45,13 @@
 							</a>
 							<a  id="edit-<?=$group_data->group_id?>" href="<?=admin_url('admin.php?page=lms_groups_edit&group='.$group_data->group_id)?>" class="group_action viewButton">
 								Edit <i class="fa fa-pencil"></i>
-							</a>							
+							</a>
+							<a  id="view_group_reports-<?=$group_data->group_id?>" href="#" class="group_action view_group_reports" data-id="<?=$group_data->group_id?>">
+								View Reports <i class="fa fa-table"></i>
+							</a>
+							<a  id="copy_group-<?=$group_data->group_id?>" href="#" class="group_action copy_group" data-id="<?=$group_data->group_id?>">
+								Copy <i class="fa fa-copy"></i>
+							</a>								
 							<?php if($group_data->remove==1) $display="style='display: inline'"; else $display="style='display: none'"; ?>
 								 <a  id="restore-<?=$group_data->group_id?>" class="group_action group_restore " <?=(isset($display)? $display : '')?> href="javascript: restoreGroup(<?=$group_data->group_id?>)">
 								 	Restore <i class="fa fa-upload"></i>
@@ -60,3 +66,43 @@
 		<?=$pagination?>
 	</div>
 </div>
+<div id="report_modal" style="display: none;">
+		<!-- RESULTS -->
+		<div class="results_wrapper">
+			<table class='widefat' style='margin-top:20px;'>
+				<thead>
+			 		<tr>
+			 			<th>ID</th>
+				 		<th>Full Name</th>	 		
+				 		<th>Course</th>
+				 		<th>Completed %</th>
+				 		<th>Date Completed</th>
+				 		<th>Date View</th>
+				 		<th>Attempts</th>
+				 		<th>View</th>
+				 		<th>Interaction</th>
+				 		<th>Due</th>	 		
+			 		</tr>
+				</thead>
+				<tbody id="results_table">
+				
+				</tbody>
+			</table>
+
+		</div>
+	<!-- RESULTS -->
+		<script type="text/template" id="results_template">
+			<tr class="result-row">
+				<td>{num}</td>	
+				<td>{first_name} {last_name}</td>					
+				<td>{post_title}</td>
+				<td style="text-align: right; padding-right: 60px;">{score}{symbol}</td>
+				<td>{time}</td>
+				<td>{date_hits}</td>
+				<td>{attempts}/{attempts_limit}</td>
+				<td>{hits}/{hits_limit}</td>
+				<td>{lms_interaction_date}</td>	
+				<td>{due}</td>					
+			</tr>
+		</script>
+	</div>

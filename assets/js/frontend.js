@@ -64,10 +64,15 @@ function videoEnded(){
 						    test_id: test,
 						    user_id: user
 						},
-						success: function(result) {	
-							jQuery.cookie('video_end', "stop");
-							jQuery.cookie('test_access', "true");
-							window.location=jQuery("#redirect_link").val();												
+						success: function(result) {
+              var success=jQuery.parseJSON(result);
+              if(success.success=='success'){
+                jQuery.cookie('video_end', "stop");
+                jQuery.cookie('test_access', "true");
+                window.location=jQuery("#redirect_link").val(); 
+              }else{                
+                console.log('success ' , success);
+              }											
 						}
 					});
 				}
@@ -86,9 +91,14 @@ function videoEnded(){
 						    user_id: user
 						},
 						success: function(result) {							
-							jQuery.cookie('video_end', "stop");
-							jQuery.cookie('test_access', "true");
-							window.location=jQuery("#redirect_link").val();
+							var success=jQuery.parseJSON(result);
+              if(success.success=='success'){
+                jQuery.cookie('video_end', "stop");
+                jQuery.cookie('test_access', "true");
+                window.location=jQuery("#redirect_link").val(); 
+              }else{                
+                console.log('success ' , success);
+              }                     
 						}
 					});
 				}                
@@ -98,6 +108,7 @@ function videoEnded(){
     // },1000);
 }
 videoEnded();
+
 (function($) {
   $(document).ready(function(){
     var _tabs = {      

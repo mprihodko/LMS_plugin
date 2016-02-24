@@ -30,7 +30,6 @@ Class Groups {
 		$this->group_data=$this->get_group();	
 		$this->group_per_page=20;
 		
-		
 		/*actions*/
 		add_action( 'admin_init', array($this, 'script_admin_init'));
 		add_action( 'admin_menu', array($this, 'lms_groups_list_menu'));		
@@ -82,7 +81,7 @@ Class Groups {
 		if($limit!=null)
 		 	$query_param.="LIMIT ".$offset.", ".$limit." ";		
 		if($GLOBALS['users']->user->roles[0]=='administrator'){
-			$query=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_groups` ".$query_param);
+			$query=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_groups` ".$query_param);			
 		}else{
 			$group_by_user=$GLOBALS['users']->get_user_groups($this->user);
 			foreach ($group_by_user as $k => $v){
@@ -101,18 +100,20 @@ Class Groups {
 		/* get pages */
 	   
 	    /*define offset*/
-	    if($current_page>0) $offset=$current_page*$this->group_per_page; else $offset=0;
+	    if($current_page>1) $offset=$current_page*$this->group_per_page; else $offset=0;
 	    /*get groups*/
-	    if($GLOBALS['users']->user->roles[0]=='administrator'){
+	    if($GLOBALS['users']->user->roles[0]=='administrator'){		    	
 			$groups=$this->get_groups('name', $offset, $this->group_per_page);
 			$this->pagination=$this->group_pagination($current_page, false);
 		}else{
 			$group_by_user=$GLOBALS['users']->get_user_groups($this->user);
-			foreach ($group_by_user as $k => $v) {
-				$group_id[$k]=$v->group_id;
+			if($group_by_user){
+				foreach ($group_by_user as $k => $v) {
+					$group_id[$k]=$v->group_id;
+				}
+				$groups=$this->get_group("group_id", $group_id);
+				$this->pagination=$this->group_pagination($current_page, false);
 			}
-			$groups=$this->get_group("group_id", $group_id);
-			$this->pagination=$this->group_pagination($current_page, false);
 		}
 		if(isset($groups))
 			return $groups;
@@ -269,7 +270,21 @@ Class Groups {
 		}
 		return $output;
 	}
-
+	public function ingroup_users($group_id=null, $flag='count'){
+		if($group_id==null) return 0;
+		$query=$this->db->get_results("	SELECT *
+										FROM `".$this->db->prefix."lms_group_users`
+										WHERE  `group_id`=".$group_id);
+		switch ($flag) {
+			case 'count':
+				if($query) return count($query);
+				break;
+			
+			case 'users':
+				if($query) return $query;
+				break;
+		}
+	}
 
 
 	/* Save Groups */
@@ -397,5 +412,17 @@ Class Groups {
 		}
 
 	}
+
+	public function identify_group(){
+		if($_SESSION['current_group']=='administrator') return true;
+		global $post;
+		$query=$this->db->get_results("SELECT `group_id` FROM `".$this->db->prefix."lms_group_tests` WHERE `test_id`=".$post->ID);
+		if(!$query) return false;
+		foreach ($query as $key => $value) {
+			if($value->group_id == $_SESSION['current_group']) return $value->group_id;
+		}
+	}
+
+
 
 }

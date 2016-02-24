@@ -29,7 +29,7 @@
     float: left;
     position: relative;
     width: 100%;
-    z-index: 1050;
+    z-index: 50;
     padding: 10px 0px;
   }
   .lms .links-bar p.access-reports {
@@ -129,6 +129,9 @@
   .lms .wrap.groups-list ul.groups-available li div.actions-group-block {
     width: 20%;
   }
+  .lms .wrap.groups-list ul.groups-available li div.actions-group-block a {
+    display: block;
+  }
   .lms ul.test-list {
     float: left;
     margin: 0px;
@@ -204,7 +207,7 @@
     float: left;
     position: relative;
     width: 100%;
-    z-index: 1050;
+    z-index: 50;
     padding: 10px 0px;
   }
   .lms .links-bar p.access-reports {
@@ -391,7 +394,7 @@
     float: left;
     position: relative;
     width: 100%;
-    z-index: 1050;
+    z-index: 50;
     padding: 10px 0px;
   }
   .lms .links-bar p.access-reports {
@@ -581,7 +584,7 @@
     float: left;
     position: relative;
     width: 100%;
-    z-index: 1050;
+    z-index: 50;
     padding: 10px 0px;
   }
   .lms .links-bar p.access-reports {
@@ -1553,6 +1556,36 @@ form.addtestForm {
 .video_inputs .select_type_video div.active {
   background: #F67F45;
   color: #444;
+}
+body #report_modal {
+  display: none;
+}
+body .fixed-dialog {
+  position: fixed;
+  min-width: 1200px;
+  min-height: 600px;
+  z-index: 20000;
+}
+body .fixed-dialog .results_wrapper {
+  width: 100%;
+  margin: 0;
+  display: block;
+  float: left;
+}
+body .fixed-dialog .results_wrapper .widefat {
+  width: 100%;
+  font-size: 13px;
+}
+body .fixed-dialog .results_wrapper .widefat thead,
+body .fixed-dialog .results_wrapper .widefat th {
+  background: #F67F45;
+  color: #fff;
+}
+body .fixed-dialog .results_wrapper .result-row {
+  border-bottom: 1px solid #cfcfcf;
+}
+body .ui-button-text:focus {
+  outline: none;
 }
 #admin_reports {
   display: block;
@@ -2895,6 +2928,9 @@ form.addtestForm {
     list-style-type: none;
     list-style: none;
   }
+  .lms ul.test-questions .test h4 {
+    color: #444!important;
+  }
   .lms ul.test-questions .test fieldset ul {
     list-style-type: none;
   }
@@ -2933,6 +2969,9 @@ form.addtestForm {
     color: #0f0f0f;
     list-style-type: none;
     list-style: none;
+  }
+  .lms ul.test-questions .test h4 {
+    color: #444!important;
   }
   .lms ul.test-questions .test fieldset ul {
     list-style-type: none;
@@ -2981,6 +3020,9 @@ form.addtestForm {
     list-style-type: none;
     list-style: none;
     text-align: center;
+  }
+  .lms ul.test-questions .test h4 {
+    color: #444!important;
   }
   .lms ul.test-questions .test fieldset ul {
     text-align: center;
@@ -3038,6 +3080,9 @@ form.addtestForm {
     list-style-type: none;
     list-style: none;
     text-align: center;
+  }
+  .lms ul.test-questions .test h4 {
+    color: #444!important;
   }
   .lms ul.test-questions .test fieldset ul {
     text-align: center;

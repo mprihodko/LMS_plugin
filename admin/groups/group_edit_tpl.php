@@ -1,8 +1,10 @@
 <div class="groups_wrapper" id="admin_edit_groups">
-	<form action='<?=((is_admin())? admin_url('admin.php?page=lms_groups_edit&action=edit_group') : home_url('groups/'))?>' method='POST'>
+	<form action='<?=((is_admin())? admin_url('admin.php?page=lms_groups') : home_url('/groups/'))?>' method='POST'>
 	<div class="title_page_groups">
 		<span><?=(($group->group_id>0)?$group->name: "NEW GROUP")?></span>
-		<input type='submit' class="add-new-group" value='<?php echo (($_GET['group']>0) ? 'Save Group' : 'Add New Group'); ?>'/>
+		<input type='submit' class="add-new-group" value='<?php echo ((isset($_GET['group'])) ? (($_GET['group']>0)? 'Save Group' : 'Add New Group') : 'Add New Group'); ?>'/>
+		<?php echo ((isset($_GET['group'])) ? (($_GET['group']>0)? '<input type="button" id="copyGroup" data-id="'.$_GET['group'].'" value="Copy" class="add-new-group copy_group" >' : '' ) : '')?>
+		<?php echo ((isset($_GET['group'])) ? (($_GET['group']>0)? '<input type="button" id="viewGroupReports" data-id="'.$_GET['group'].'" value="View Group Reports" class="add-new-group view_group_reports" >' : '' ) : '')?>
 	</div>			
 		<input type='hidden' id="group_id" name='group_id' value='<?=$group->group_id?>' />		
 		<div class='form-table'>
@@ -223,9 +225,49 @@
 			</div>
 		</div>	
 			<div class='submit-form-group'>
-				<input type='submit' value='<?php echo (($_GET['group']>0) ? 'Save Group' : 'Add New Group') ?>' class='add-new-group' />
+				<input type='submit' value='<?php echo ((isset($_GET['group'])) ? (($_GET['group']>0)? 'Save Group' : 'Add New Group') : 'Add New Group'); ?>' class='add-new-group' />			
 			</div>
 	</form>
+	<div id="report_modal" style="display: none;">
+		<!-- RESULTS -->
+		<div class="results_wrapper">
+			<table class='widefat' style='margin-top:20px;'>
+				<thead>
+			 		<tr>
+			 			<th>ID</th>
+				 		<th>Full Name</th>	 		
+				 		<th>Course</th>
+				 		<th>Completed %</th>
+				 		<th>Date Completed</th>
+				 		<th>Date View</th>
+				 		<th>Attempts</th>
+				 		<th>View</th>
+				 		<th>Interaction</th>
+				 		<th>Due</th>	 		
+			 		</tr>
+				</thead>
+				<tbody id="results_table">
+				
+				</tbody>
+			</table>
+
+		</div>
+	<!-- RESULTS -->
+		<script type="text/template" id="results_template">
+			<tr class="result-row">
+				<td>{num}</td>	
+				<td>{first_name} {last_name}</td>					
+				<td>{post_title}</td>
+				<td style="text-align: right; padding-right: 60px;">{score}{symbol}</td>
+				<td>{time}</td>
+				<td>{date_hits}</td>
+				<td>{attempts}/{attempts_limit}</td>
+				<td>{hits}/{hits_limit}</td>
+				<td>{lms_interaction_date}</td>	
+				<td>{due}</td>					
+			</tr>
+		</script>
+	</div>
 </div>
 
 

@@ -1,6 +1,6 @@
 <div class='lms'>
 <?php if(isset($_POST["answer"])): ?>
-	<?php if($GLOBALS['tests']->is_passed($_POST["answer"], get_the_ID())): ?>
+	<?php if($GLOBALS['tests']->is_passed($_POST["answer"], get_the_ID(), $_SESSION['current_group'])): ?>
 		<h2>Congratulations, you passed!</h2>
 		<p>Your score: <?=$GLOBALS['tests']->the_score?></p>
 	<?php else:  ?>
@@ -28,9 +28,11 @@
 	</div>
 <?php endif; ?>
 </div>
+
 <script type="text/javascript">
-	jQuery.cookie("test_access", "false");
+	
 	jQuery(document).bind('keydown keyup', function(e) {
+	console.log('e ' , e);
     if(e.which === 116) {       
        return false;
     }

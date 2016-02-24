@@ -64,10 +64,15 @@ function videoEnded(){
 						    test_id: test,
 						    user_id: user
 						},
-						success: function(result) {	
-							jQuery.cookie('video_end', "stop");
-							jQuery.cookie('test_access', "true");
-							window.location=jQuery("#redirect_link").val();												
+						success: function(result) {
+              var success=jQuery.parseJSON(result);
+              if(success.success=='success'){
+                jQuery.cookie('video_end', "stop");
+                jQuery.cookie('test_access', "true");
+                window.location=jQuery("#redirect_link").val(); 
+              }else{                
+                console.log('success ' , success);
+              }											
 						}
 					});
 				}
@@ -86,9 +91,14 @@ function videoEnded(){
 						    user_id: user
 						},
 						success: function(result) {							
-							jQuery.cookie('video_end', "stop");
-							jQuery.cookie('test_access', "true");
-							window.location=jQuery("#redirect_link").val();
+							var success=jQuery.parseJSON(result);
+              if(success.success=='success'){
+                jQuery.cookie('video_end', "stop");
+                jQuery.cookie('test_access', "true");
+                window.location=jQuery("#redirect_link").val(); 
+              }else{                
+                console.log('success ' , success);
+              }                     
 						}
 					});
 				}                
@@ -98,6 +108,7 @@ function videoEnded(){
     // },1000);
 }
 videoEnded();
+
 (function($) {
   $(document).ready(function(){
     var _tabs = {      
@@ -951,7 +962,7 @@ function removeGroup(id){
 		},
 		success: function(result) { 
 			jQuery("#group-"+id).addClass('removed');
-			jQuery(this).attr('href', 'javascript:deleteGroup("'+id+'")');
+			jQuery("#delete-"+id).attr('href', 'javascript: deleteGroup("'+id+'")');			
 			jQuery("#restore-"+id).attr("style", "display: inline");
 		}
 	});
@@ -1000,14 +1011,94 @@ function delGroup(id){
 	jQuery('#selected_groups tbody').find('#groups-'+id).remove();
 }
 
-jQuery(document).ready(function(){
+jQuery(document).ready(function($){
 	jQuery(document).click(function(){
 		jQuery('#test_suggestions').fadeOut();
 		jQuery('#user_suggestions').fadeOut();
 		jQuery('#courses_suggestions').fadeOut();
 		jQuery('#group_suggestions').fadeOut();
 	})
+	jQuery(".copy_group").live("click", function(e){
+		e.preventDefault();
+		var group = $(this).data('id');
+		$.ajax({
+		  	type:"GET",
+		  	url: ajaxurl,
+		  	data: {
+			    action: "copy_group",
+			    value: encodeURIComponent(group)			   
+			}, 
+			success: function(result) {
+				var results=jQuery.parseJSON(result);
+				if(results.result=='success')
+					alert("Copied!!!");
+				else
+					alert("Error: Can't copy this group!!!");	
+			}
+		});
+	});
+  
+	$(".view_group_reports").live("click", function(e){
+		e.preventDefault();
+		var group = [$(this).data('id')];
+		$( "#report_modal" ).dialog({
+	                autoOpen: false,
+	            	modal: true,
+	          	    dialogClass: 'fixed-dialog',
+	    		    show: {
+	                	effect: "blind",
+	                    duration: 1000
+	      	        },
+		  	        hide: {
+	                    effect: "explode",
+	                    duration: 1000
+	                }
+	            });
+        $("#report_modal").dialog( "open" );
+        $.ajax({
+			type:"POST",
+		  	url: ajaxurl, 
+		  	data: {
+			    action: "get_reports_group_report",						    
+			    data_value: group,
+			    attempts: "false",
+			    hits: "false",
+			    day_from: "0001-01-01",
+			    day_to: "9999-01-01"
+			}, 
+			success: function(json) {
+				$("#results_table").html('');
+				var template = $("#results_template").html();							
+				var resp=$.parseJSON(json);
+				if(resp){
+					$.each( resp, function (index, value){
+						$.each( value, function(k, v){
+
+							var row = template
+				              .replace(/{num}/g,					((v.num)?v.num:'-'))							             
+				              .replace(/{first_name}/g,				((v.first_name)?v.first_name:'-'))
+				              .replace(/{last_name}/g,				((v.last_name)?v.last_name:''))
+				              .replace(/{post_title}/g,				((v.post_title)?v.post_title:'no-name'))
+				              .replace(/{score}/g,					((v.score)?v.score:'-'))
+				              .replace(/{symbol}/g, 				((v.symbol)?v.symbol:'-'))										
+				              .replace(/{time}/g, 					((v.time)?v.time:'-'))	
+				              .replace(/{date_hits}/g,  			((v.date_hits)?v.date_hits:v.time))
+				              .replace(/{attempts}/g,				((v.attempts)?v.attempts:'0'))
+				              .replace(/{attempts_limit}/g,			((v.attempts_limit)?v.attempts_limit:'0'))
+				              .replace(/{hits}/g,					((v.hits)?v.hits:v.attempts))
+				              .replace(/{hits_limit}/g,				((v.hits_limit)?v.hits_limit:'0'))
+				              .replace(/{lms_interaction_date}/g,	((v.lms_interaction_date)?v.lms_interaction_date:'-'))						           
+			  				  .replace(/{due}/g,					((v.due)?v.due:'-'));		
+							  $("#results_table").append(row);
+						});
+					});		  			
+				}
+			}
+		});
+	});
 });
+
+
 (function($){
 	$(document).ready(function(){
 
@@ -1134,12 +1225,9 @@ jQuery(document).ready(function(){
 					$.each(data, function( index, value ) {
 					  indentificators.push(data.eq(index).data('id'));
 					});
-				}else{
-					return;
 				}
 
-				/*send ajax query*/
-				if(indentificators.length>0){
+				/*send ajax query*/				
 					$.ajax({
 						type:"POST",
 					  	url: ajaxurl,
@@ -1160,8 +1248,7 @@ jQuery(document).ready(function(){
 									$.each( value, function(k, v){
 
 										var row = template
-							              .replace(/{num}/g,					((v.num)?v.num:'-'))
-							              .replace(/{test_result_id}/g,			((v.test_result_id)? v.test_result_id : '-'))
+							              .replace(/{num}/g,					((v.num)?v.num:'-'))							             
 							              .replace(/{first_name}/g,				((v.first_name)?v.first_name:'-'))
 							              .replace(/{last_name}/g,				((v.last_name)?v.last_name:''))
 							              .replace(/{post_title}/g,				((v.post_title)?v.post_title:'no-name'))
@@ -1173,7 +1260,8 @@ jQuery(document).ready(function(){
 							              .replace(/{attempts_limit}/g,			((v.attempts_limit)?v.attempts_limit:'0'))
 							              .replace(/{hits}/g,					((v.hits)?v.hits:v.attempts))
 							              .replace(/{hits_limit}/g,				((v.hits_limit)?v.hits_limit:'0'))
-							              .replace(/{lms_interaction_date}/g,	((v.lms_interaction_date)?v.lms_interaction_date:'-'));						           
+							              .replace(/{lms_interaction_date}/g,	((v.lms_interaction_date)?v.lms_interaction_date:'-'))	
+							              .replace(/{due}/g,					((v.due)?v.due:'-'));					           
 						  					// $("#downloadCsv").attr('href', v.filename+'.csv');
 											$("#results_table").append(row);
 									});
@@ -1182,9 +1270,7 @@ jQuery(document).ready(function(){
 							}
 						}
 					});
-				}else{
-					return;
-				}
+				
 				
 			});
 		},

@@ -819,3 +819,34 @@
 			}
 		}
 	}
+body {
+	#report_modal{
+		display: none;
+	}
+	.fixed-dialog{
+		position: fixed;		
+		min-width: 1200px;
+		min-height: 600px;
+		z-index: 20000;
+		.results_wrapper{
+			.widefat{
+				width: 100%;
+				font-size: 13px;
+				thead, th {
+					background: @button-color;
+					color: #fff;
+				}
+			}
+			.result-row{
+				border-bottom: 1px solid #cfcfcf;
+			}
+			width: 100%;
+			margin: 0;
+			display: block;
+			float: left;
+		}
+	}
+	.ui-button-text{
+		&:focus { outline: none; }
+	}
+}

@@ -183,8 +183,7 @@
 		<table class='widefat' style='margin-top:20px;'>
 			<thead>
 		 		<tr>
-		 			<th>ID</th>	 	
-			 		<th>Result</th>
+		 			<th>ID</th>
 			 		<th>Full Name</th>	 		
 			 		<th>Course</th>
 			 		<th>Completed %</th>
@@ -206,8 +205,7 @@
 </div>
 <script type="text/template" id="results_template">
 	<tr class="result-row">
-		<td>{num}</td>					
-		<td>{test_result_id}</td>
+		<td>{num}</td>	
 		<td>{first_name} {last_name}</td>					
 		<td>{post_title}</td>
 		<td style="text-align: right; padding-right: 60px;">{score}{symbol}</td>

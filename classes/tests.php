@@ -44,9 +44,12 @@ Class Tests{
 
 
 
-	/***************************************************************************************************/
-	/*test post type setUps*/
-	/***************************************************************************************************/
+
+#####################################################################################################################
+#																													#
+#  THE TEST POST TYPE OPTIONS 																						#
+#																													#
+#####################################################################################################################
 	public function include_upload_script_thumbnail() {													
 		if ( ! did_action( 'wp_enqueue_media' ) ) {
 			wp_enqueue_media();
@@ -188,13 +191,21 @@ Class Tests{
 		require_once(IAMD_TD.'/admin/test_meta/mixtape_meta_tpl.php');
 	}
 	/* meta fields HTML Callback*/
-	/***************************************************************************************************/
-	/*test post type setiing Up */
-	/***************************************************************************************************/
 
-	/***************************************************************************************************/
-	/*test GET _FUNCTIONS*/
-	/***************************************************************************************************/
+
+
+
+
+
+
+
+#####################################################################################################################
+#																													#
+#  THE TEST DATA 																									#
+#																													#
+#####################################################################################################################
+
+
 	public function get_group_tests($group_id){
 		if(is_array($group_id)){
 			$query_param=implode(" OR `group_id`=", $group_id);
@@ -216,7 +227,6 @@ Class Tests{
 		$total = $wp_query->max_num_pages;		
 		if ( $total > 1 )  {
 	     // get the current page
-
 		    if ( !$current_page = get_query_var('paged') )
 		        $current_page = 1;	    
 		     	// structure of "format" depends on whether we're using pretty permalinks
@@ -249,6 +259,13 @@ Class Tests{
 		return $questions;
 	}
 
+	public function get_test_group($test_id=null){
+		global $post;
+		if($test_id==null) $test_id=$post->ID;
+		$groups = $this->db->get_results('SELECT * FROM '.$this->db->prefix.'lms_group_tests WHERE test_id = '.$test_id);
+		return $groups;
+	}
+
 	public function the_quest_options($options, $num){
 		$s = json_decode($options);
 		echo "<fieldset><ul>";	
@@ -271,10 +288,18 @@ Class Tests{
 		echo "</ul></fieldset>";
 	}
 
-	
-	/***********************************************************************************/
-	/*if test has ***********/
-	/***********************************************************************************/
+
+
+
+#####################################################################################################################
+#																													#
+#																													#
+#  TEST HAS OPTIONS																									#
+#																													#
+#																													#
+#####################################################################################################################
+
+
 	public function has_media($test_id=null){
 		if($test_id==null) return false;
 		$is_media = get_post_meta($test_id, "lms_attach_media", true);
@@ -308,13 +333,13 @@ Class Tests{
 		if($is_interaction=='on') return true;
 		return false;
 	}
-	/***********************************************************************************/
-	/*if test has ***********/
-	/***********************************************************************************/
 
-	/***********************************************************************************/
-	/* GET PARTS URL */
-	/***********************************************************************************/
+
+#####################################################################################################################
+#																													#
+#  PARTS URL OPTIONS																								#
+#																													#
+#####################################################################################################################
 	
 
 	public function get_part_after_before($test_id=null){
@@ -364,13 +389,22 @@ Class Tests{
 		return $this->token;
 	}
 
-	/***********************************************************************************/
-	/* GET PARTS URL */
-	/***********************************************************************************/
+	public function get_max_test_attempts($test_id=null, $group_id=null){
+		if($test_id==null || $group_id==null) return 0;
+		$query=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_group_tests` WHERE test_id=".$test_id." AND group_id=".$group_id);
+		if(!$query)return 0;
+		return $query[0]->view_limit;
+	}
 
 
+#####################################################################################################################
+#																													#
+# PASSED OPTIONS																									#
+#																													#
+#####################################################################################################################
 
-	public function is_passed($answers, $test_id=null){
+
+	public function is_passed($answers, $test_id=null, $group_id=null){
 		global $post;
 		if(!is_array($answers)) return false;
 		if($test_id==null) $test_id=$post->ID;
@@ -382,8 +416,10 @@ Class Tests{
 		}
 		$this->the_score=($correct*100)/count($questions);
 		$pass=get_post_meta($test_id, "test_pass", true);
-
+		if($group_id==null) return false;
+		if($group_id=='administrator') $group_id=0;
 		$insert_result=array(	"test_id" => $test_id,
+								"group_id" => $group_id,
 								"user_id" => $this->user,
 								"correct" => $correct,
 								"pass"	  => (($this->the_score>=$pass)? 1 : 0),
@@ -397,6 +433,20 @@ Class Tests{
 		return false;
 	}
 
+
+
+
+
+
+
+#####################################################################################################################
+#																													#
+#  CERTIFICATE OPTIONS   									  			  											#
+#																													#
+#####################################################################################################################
+
+
+	/*is_user_passed Test*/
 	public function is_user_passed($test_id=null, $user_id=null){
 		global $post;
 		$this->test_id=$post->ID;		
@@ -411,7 +461,7 @@ Class Tests{
 		if($query) return $query[0]->pass;
 		return false;
 	}
-
+	/*LoadJpeg Certificate*/
 	public function LoadJpeg($imgname, $test_name){
 		// global $post;					
 		get_currentuserinfo();	
@@ -447,7 +497,7 @@ Class Tests{
 	    }
 		return $im;		
 	}
-
+	/*generate_test_certificate*/
 	public function generate_test_certificate($test_id){	
 		$this->test_id=$test_id;
 		$test_name = get_post($test_id);		
@@ -461,12 +511,13 @@ Class Tests{
 		imagedestroy($img);
 	}
 
+#####################################################################################################################
+#																													#
+#   SAVE TEST OPTIONS  									  				  											#
+#																													#
+#####################################################################################################################
 
-
-
-
-
-
+	/*save test content*/
 	public function save_post_front_end(){
 		
 				$post_data = array(
@@ -822,11 +873,7 @@ Class Tests{
 				}
 
 	   		}	   		
-			if(isset($steps) && is_array($steps)){
-				// echo "<pre>";
-				// var_dump($steps);
-				// echo "</pre>";
-				// die;
+			if(isset($steps) && is_array($steps)){				
 				update_post_meta($post_id, "lms_interaction_data", serialize($steps));
 			}	
 	   	}

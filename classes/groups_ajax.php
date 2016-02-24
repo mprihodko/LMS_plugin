@@ -155,3 +155,18 @@ class Group_Restore extends AJAX_Handler {
     }
 }
 new Group_Restore('restore_group');
+
+
+class Group_Copy extends AJAX_Handler {
+    function callback() {
+        $id=strip_tags(trim($_GET['value']));
+        $get_data=$this->db->get_results( "SELECT * FROM ".$this->db->prefix."lms_groups WHERE group_id=".$id);
+        if(!$get_data) {echo json_encode(array("result"=>'fail')); die();}
+        unset($get_data[0]->group_id);
+        $get_data[0]->name=$get_data[0]->name."-copy";
+        $copy=(array)$get_data[0];        
+        $this->db->insert($this->db->prefix."lms_groups", $copy);        
+        echo json_encode(array("result"=>'success')); die();
+    }
+}
+new Group_Copy('copy_group');

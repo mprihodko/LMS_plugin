@@ -638,16 +638,16 @@ body.toplevel_page_lms_groups #wpcontent #admin_groups ul #group-header ul.group
   width: 5%;
 }
 body.toplevel_page_lms_groups #wpcontent #admin_groups ul #group-header ul.group-header-titles li.name {
-  width: 30%;
+  width: 35%;
 }
 body.toplevel_page_lms_groups #wpcontent #admin_groups ul #group-header ul.group-header-titles li.view_limit {
-  width: 10%;
+  width: 5%;
 }
 body.toplevel_page_lms_groups #wpcontent #admin_groups ul #group-header ul.group-header-titles li.owner {
-  width: 30%;
+  width: 20%;
 }
 body.toplevel_page_lms_groups #wpcontent #admin_groups ul #group-header ul.group-header-titles li.actions {
-  width: 25%;
+  width: 35%;
 }
 body.toplevel_page_lms_groups #wpcontent #admin_groups ul .group_row {
   width: 100%;
@@ -690,16 +690,16 @@ body.toplevel_page_lms_groups #wpcontent #admin_groups ul .group_row ul.group-da
   width: 5%;
 }
 body.toplevel_page_lms_groups #wpcontent #admin_groups ul .group_row ul.group-data-list li.name {
-  width: 30%;
+  width: 35%;
 }
 body.toplevel_page_lms_groups #wpcontent #admin_groups ul .group_row ul.group-data-list li.view_limit {
-  width: 10%;
+  width: 5%;
 }
 body.toplevel_page_lms_groups #wpcontent #admin_groups ul .group_row ul.group-data-list li.owner {
-  width: 30%;
+  width: 20%;
 }
 body.toplevel_page_lms_groups #wpcontent #admin_groups ul .group_row ul.group-data-list li.actions {
-  width: 25%;
+  width: 35%;
 }
 body.toplevel_page_lms_groups #wpcontent #admin_groups ul .group_row ul.group-data-list li.actions a {
   color: #FFF;
@@ -720,6 +720,9 @@ body.toplevel_page_lms_groups #wpcontent #admin_groups ul .group_row ul.group-da
 }
 body.toplevel_page_lms_groups #wpcontent #admin_groups ul .group_row ul.group-data-list li.actions a.viewButton {
   background: #28BAF5;
+}
+body.toplevel_page_lms_groups #wpcontent #admin_groups ul .group_row ul.group-data-list li.actions a.view_group_reports {
+  background: #30A220;
 }
 body.toplevel_page_lms_groups #wpcontent #admin_groups .group_pagination {
   display: table;
@@ -953,6 +956,35 @@ body.groups_page_lms_groups_edit #wpcontent #admin_edit_groups .group_attach .se
   font-size: 22px;
   padding: 15px 5px;
   vertical-align: middle;
+}
+body #report_modal {
+  display: none;
+}
+body .fixed-dialog {
+  position: fixed;
+  min-width: 1200px;
+  min-height: 600px;
+}
+body .fixed-dialog .results_wrapper {
+  width: 100%;
+  margin: 0;
+  display: block;
+  float: left;
+}
+body .fixed-dialog .results_wrapper .widefat {
+  width: 100%;
+  font-size: 13px;
+}
+body .fixed-dialog .results_wrapper .widefat thead,
+body .fixed-dialog .results_wrapper .widefat th {
+  background: #28BAF5;
+  color: #fff;
+}
+body .fixed-dialog .results_wrapper .result-row {
+  border-bottom: 1px solid #cfcfcf;
+}
+body .ui-button-text:focus {
+  outline: none;
 }
 /*reports*/
 body.toplevel_page_lms_reports #wpcontent {

@@ -124,12 +124,9 @@
 					$.each(data, function( index, value ) {
 					  indentificators.push(data.eq(index).data('id'));
 					});
-				}else{
-					return;
 				}
 
-				/*send ajax query*/
-				if(indentificators.length>0){
+				/*send ajax query*/				
 					$.ajax({
 						type:"POST",
 					  	url: ajaxurl,
@@ -150,8 +147,7 @@
 									$.each( value, function(k, v){
 
 										var row = template
-							              .replace(/{num}/g,					((v.num)?v.num:'-'))
-							              .replace(/{test_result_id}/g,			((v.test_result_id)? v.test_result_id : '-'))
+							              .replace(/{num}/g,					((v.num)?v.num:'-'))							             
 							              .replace(/{first_name}/g,				((v.first_name)?v.first_name:'-'))
 							              .replace(/{last_name}/g,				((v.last_name)?v.last_name:''))
 							              .replace(/{post_title}/g,				((v.post_title)?v.post_title:'no-name'))
@@ -163,7 +159,8 @@
 							              .replace(/{attempts_limit}/g,			((v.attempts_limit)?v.attempts_limit:'0'))
 							              .replace(/{hits}/g,					((v.hits)?v.hits:v.attempts))
 							              .replace(/{hits_limit}/g,				((v.hits_limit)?v.hits_limit:'0'))
-							              .replace(/{lms_interaction_date}/g,	((v.lms_interaction_date)?v.lms_interaction_date:'-'));						           
+							              .replace(/{lms_interaction_date}/g,	((v.lms_interaction_date)?v.lms_interaction_date:'-'))	
+							              .replace(/{due}/g,					((v.due)?v.due:'-'));					           
 						  					// $("#downloadCsv").attr('href', v.filename+'.csv');
 											$("#results_table").append(row);
 									});
@@ -172,9 +169,7 @@
 							}
 						}
 					});
-				}else{
-					return;
-				}
+				
 				
 			});
 		},
