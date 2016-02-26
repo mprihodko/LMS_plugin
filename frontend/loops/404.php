@@ -17,11 +17,6 @@
 				// Second column
 				$second_column = sprintf( '<h3>%s</h3>', __( 'Here are some useful links:', 'Avada' ) );
 
-				if ( Avada()->settings->get( 'checklist_circle' ) ) {
-					$circle_class = 'circle-yes';
-				} else {
-					$circle_class = 'circle-no';
-				}
 				$second_column .= wp_nav_menu( array( 'theme_location' => '404_pages', 'depth' => 1, 'container' => false, 'menu_id' => 'checklist-1', 'menu_class' => 'error-menu list-icon list-icon-arrow ' . $circle_class, 'echo' => 0 ) );
 
 				echo do_shortcode( sprintf( '[one_third last="no" spacing="yes" class="useful-links"]%s[/one_third]', $second_column ) );

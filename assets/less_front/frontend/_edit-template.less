@@ -723,6 +723,23 @@
 	.wp-editor-container{
 		border: 1px solid @border-color;
 	}
+	.form-table,
+	.media_inputs #media_section,
+	.video_inputs .attach{
+		display: table;
+		.add-attach-video,
+		.add-attach-media,
+		.remove-question,
+		.add-question{
+			background: @button-color;
+			color: #FFF;
+			text-align: center;
+			display: table-cell;
+			vertical-align: middle;
+			height: 30px;
+			padding: 0 15px;
+		}
+	}
 	.add-attach-video,
 	.add-attach-media,
 	.remove-question,
@@ -730,9 +747,14 @@
 		background: @button-color;
 		color: #FFF;
 		text-align: center;
-		display: inline;
+		display: table-cell;
+		vertical-align: middle;
 		height: 30px;
 		padding: 0 15px;
+		&:hover{
+			opacity: 0.8;
+			cursor: pointer;
+		}
 	}
 	.repeatable-remove,
 	.repeatable-add{

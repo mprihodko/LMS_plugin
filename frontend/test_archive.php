@@ -7,15 +7,15 @@
 	<!-- ADD NEW TEST  -->
 	<?php if(isset($_GET['part']) && $_GET['part']=='add_new_test' && ($role=="teacher" || $role=='administrator')): ?>
 		<?php require_once(TPL_DIR."loops/add_new_test.php");?>	
-	<?php endif; ?>
+	
 	<!-- ADD NEW TEST  -->
 
 	<!-- TEST  AVAILABLE -->
-	<?php if(!isset($_GET['part'])): ?>	
+	<?php elseif(!isset($_GET['part'])): ?>	
 		<?php require_once(TPL_DIR."loops/test-list.php");?>
 	<div class="pagenation_wrap"><?$GLOBALS['tests']->test_pagination();?></div>
 	<?php else: ?>
-		<?php require_once(TPL_DIR."loops/404.php"); ?>	
+		<?php require_once(TPL_DIR."loops/sorry_page.php"); ?>	
 	<?php endif; ?>	
 	<!-- TEST  AVAILABLE -->
 </div> 

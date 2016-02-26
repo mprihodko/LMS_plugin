@@ -11,7 +11,7 @@
 			<ul class="table-row">
 				<li class="column-head">Name</li>
 				<li class="column-input">
-					<input type='text' name='name' <?php echo (($group->group_id>0)? 'value="'.htmlentities($group->name).'"' : 'placeholder="'.htmlentities($group->name).'"'); ?> required/>
+					<input type='text' name='lms_gropup_name' <?php echo (($group->group_id>0)? 'value="'.htmlentities($group->name).'"' : 'placeholder="'.htmlentities($group->name).'"'); ?> required/>
 				</li>						
 			</ul>
 			<ul class="table-row">

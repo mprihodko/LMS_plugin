@@ -31,7 +31,7 @@ class Templates {
 			$template=TPL_DIR."test_archive.php";
 		}
 		if((is_archive("lms_test") && !isset($_GET['group_name']) && $this->userrole!='administrator' )){
-			$template=TPL_DIR."groups.php";
+			$template=TPL_DIR."user_archive.php";
 		}
 		if(is_page('groups')){	
 			$template=TPL_DIR."groups.php";
@@ -70,7 +70,7 @@ class Templates {
 			}
 			else{				
 				$query->set('post__in', array(0));
-			}			
+			}						
 		}
 
 		if(is_archive("lms_test") && $query->is_main_query() && isset($_GET['group_name'])){

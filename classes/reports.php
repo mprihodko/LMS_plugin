@@ -15,10 +15,9 @@ class Reports{
 		$this->data=array();
 		$this->user=$GLOBALS['users']->user->ID;		
 
-		/*actions*/
-		add_action( 'admin_init', array($this, 'script_admin_init'));
-		add_action( 'admin_menu', array($this, 'add_reports_page'));
-
+		/*actions*/		
+		add_action( 'admin_init', 		array($this, 'script_admin_init'));
+		add_action( 'admin_menu', 		array($this, 'add_reports_page'));
 	}
 
  	
@@ -79,7 +78,17 @@ class Reports{
  		foreach ($query_hits as $key => $value) {
  			$this->data[$value->test_id][$value->user_id]['hits'][]=1;
  			$this->data[$value->test_id][$value->user_id]['hit_results']=$value;
- 		} 		
+ 		}
+ 		$query_results=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_test_results_story`");
+ 		foreach ($query_results as $key => $value) {
+ 			$this->data[$value->test_id][$value->user_id]['attempts'][]=1;
+ 			$this->data[$value->test_id][$value->user_id]['results']=$value;
+ 		}
+ 		$query_hits=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_test_hits_story`");
+ 		foreach ($query_hits as $key => $value) {
+ 			$this->data[$value->test_id][$value->user_id]['hits'][]=1;
+ 			$this->data[$value->test_id][$value->user_id]['hit_results']=$value;
+ 		} 		 		
  		if($this->data)
  			return $this->data;
  	}
@@ -97,7 +106,17 @@ class Reports{
  		foreach ($query_hits as $key => $value) {
  			$this->data[$value->test_id][$value->user_id]['hits'][]=1;
  			$this->data[$value->test_id][$value->user_id]['hit_results']=$value;
- 		} 		
+ 		} 
+ 		$query_results=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_test_results_story` WHERE `group_id`=".$query_param);
+ 		foreach ($query_results as $key => $value) {
+ 			$this->data[$value->test_id][$value->user_id]['attempts'][]=1;
+ 			$this->data[$value->test_id][$value->user_id]['results']=$value;
+ 		}
+ 		$query_hits=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_test_hits_story` WHERE `group_id`=".$query_param);
+ 		foreach ($query_hits as $key => $value) {
+ 			$this->data[$value->test_id][$value->user_id]['hits'][]=1;
+ 			$this->data[$value->test_id][$value->user_id]['hit_results']=$value;
+ 		} 			
  		if($this->data)
  			return $this->data;
  	}
@@ -115,7 +134,17 @@ class Reports{
  		foreach ($query_hits as $key => $value) {
  			$this->data[$value->test_id][$value->user_id]['hits'][]=1;
  			$this->data[$value->test_id][$value->user_id]['hit_results']=$value;
- 		} 		
+ 		} 
+ 		$query_results=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_test_results_story` WHERE `test_id`=".$query_param);
+ 		foreach ($query_results as $key => $value) {
+ 			$this->data[$value->test_id][$value->user_id]['attempts'][]=1;
+ 			$this->data[$value->test_id][$value->user_id]['results']=$value;
+ 		}
+ 		$query_hits=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_test_hits_story` WHERE `test_id`=".$query_param);
+ 		foreach ($query_hits as $key => $value) {
+ 			$this->data[$value->test_id][$value->user_id]['hits'][]=1;
+ 			$this->data[$value->test_id][$value->user_id]['hit_results']=$value;
+ 		} 				
  		if($this->data)
  			return $this->data;
  	}
@@ -133,7 +162,17 @@ class Reports{
  		foreach ($query_hits as $key => $value) {
  			$this->data[$value->test_id][$value->user_id]['hits'][]=1;
  			$this->data[$value->test_id][$value->user_id]['hit_results']=$value;
- 		} 		
+ 		} 	
+ 		$query_results=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_test_results_story` WHERE `user_id`=".$query_param);
+ 		foreach ($query_results as $key => $value) {
+ 			$this->data[$value->test_id][$value->user_id]['attempts'][]=1;
+ 			$this->data[$value->test_id][$value->user_id]['results']=$value;
+ 		}
+ 		$query_hits=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_test_hits_story` WHERE `user_id`=".$query_param);
+ 		foreach ($query_hits as $key => $value) {
+ 			$this->data[$value->test_id][$value->user_id]['hits'][]=1;
+ 			$this->data[$value->test_id][$value->user_id]['hit_results']=$value;
+ 		} 			
  		if($this->data)
  			return $this->data;
  	}
@@ -168,7 +207,18 @@ class Reports{
 		$hits=count($hit);	
 		return $hits;		
 	}
+	function get_user_used_views_in_group($group_id=null){
+		if($group_id==null) return 0;
+		$hits=0;
+		$hit=$this->db->get_results('SELECT * 
+										FROM '.$this->db->prefix.'lms_test_hits 
+										WHERE user_id='.$this->user.'
+										AND group_id='.$group_id);
+		if(!$hit) return 0;		
+		$hits=count($hit);	
+		return $hits;		
 
+	}
 
 	/*max-hits*/
  	public function get_hits_limit($group_id=null){ 		
@@ -281,8 +331,16 @@ class Reports{
 					}
 
 					/* get result data */
-					$hits_limit=$this->get_hits_limit($results->group_id);
-					$attempts_limit=$this->get_attempts_limit($test, $results->group_id);
+					if(isset($hit_result)){
+						$hits_limit=$this->get_hits_limit($hit_result->group_id);
+					}else{
+						$hits_limit=0;
+					}
+					if(isset($results)){
+						$attempts_limit=$this->get_attempts_limit($test, $results->group_id);
+					}else{
+						$attempts_limit=0;
+					}
 
 					/* create json obj*/
 					if(!isset( $results_date))  $results_date ="0000-00-00";
@@ -329,9 +387,7 @@ class Reports{
 				}
 			}
 		fclose($fp);
-	}
-
-
+	}	
 }
 
 

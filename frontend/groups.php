@@ -24,17 +24,23 @@
 	<?php endif; ?>
 	<!-- GROUP LIST TEMPLATE  -->
 
-	<!-- REPORTS FOR ADMIN AND TEACHERS -->
-	<?php if(isset($_GET['page']) && $_GET['page']=='lms_reports' && ($role=="teacher" || $role=='administrator')): ?>
-		<?php require_once(TPL_DIR.'/loops/lms_reports.php'); ?>
-	<?php endif; ?>
-	<!-- REPORTS FOR ADMIN AND TEACHERS -->
-
 	<!-- EDIT AND CREATE GROUP -->
 	<?php if(isset($_GET['page']) && $_GET['page']=='lms_new_group' && ($role=="teacher" || $role=='administrator')): ?>
 		<?php $GLOBALS['groups']->lms_groups_edit_admin() ?>
 	<?php endif; ?>
 	<!-- EDIT AND CREATE GROUP -->
+
+	<!-- REPORTS FOR ADMIN  -->
+	<?php if(isset($_GET['page']) && $_GET['page']=='lms_reports' && $role=='administrator'): ?>
+		<?php require_once(TPL_DIR.'/loops/lms_reports.php'); ?>
+	<?php endif; ?>
+	<!-- REPORTS FOR ADMIN  -->
+
+	<!-- REPORTS FOR  TEACHERS -->
+	<?php if(isset($_GET['page']) && $_GET['page']=='lms_reports' && $role=="teacher"): ?>
+		<?php require_once(TPL_DIR.'/loops/lms_reports.php'); ?>
+	<?php endif; ?>
+	<!-- REPORTS FOR  TEACHERS -->
 
 	<!-- REPORTS FOR USERS -->
 	<?php if(isset($_GET['page']) && $_GET['page']=='lms_reports' && $role!="teacher" && $role!='administrator'): ?>

@@ -2,6 +2,7 @@
 
 /*Requires*/
 require_once(IAMD_TD.'/core/js_wp_editor.php');
+require_once(IAMD_TD.'/classes/database.php');
 require_once(IAMD_TD.'/classes/groups.php');
 require_once(IAMD_TD.'/classes/users.php');
 require_once(IAMD_TD.'/classes/tests.php');
@@ -11,12 +12,13 @@ require_once(IAMD_TD.'/classes/templates.php');
 
 /*Class Objects*/
 add_action ('plugins_loaded', 'init_classes');
-function init_classes(){
+function init_classes(){	
 	$GLOBALS['users']=new Users();
 	$GLOBALS['groups']=new Groups();
 	$GLOBALS['tests']=new Tests();	
 	$GLOBALS['reports']=new Reports();
-	$GLOBALS['template']=new Templates();	
+	$GLOBALS['template']=new Templates();
+	add_shortcode('lms_login_form', "lms_login_form");	
 	return $GLOBALS;
 }
 
@@ -58,8 +60,80 @@ function front_js_enqueue(){
 
 }
 
+		
+/*Add shortcode login form*/
+function lms_login_form(){
+	if(!is_user_logged_in()){
+		wp_login_form();
+	}else{
+		wp_loginout(home_url());
+	}
+}
+
+
+/*CRON PART*/
+function get_all_reports_cron(){ 
+	global $wpdb;
+	$query_results=$wpdb->get_results("SELECT * FROM `".$wpdb->prefix."lms_test_results`");
+	foreach ($query_results as $key => $value) {
+		$data[$value->test_id][$value->user_id]['attempts'][]=1;
+		$data[$value->test_id][$value->user_id]['results']=$value;
+	}
+	$query_hits=$wpdb->get_results("SELECT * FROM `".$wpdb->prefix."lms_test_hits`");
+	foreach ($query_hits as $key => $value) {
+		$data[$value->test_id][$value->user_id]['hits'][]=1;
+		$data[$value->test_id][$value->user_id]['hit_results']=$value;
+	} 		
+	if($data)
+		return $data;
+}
+
+add_action( 'year_reset_result', 'year_reset');
+if ( ! wp_next_scheduled( 'year_reset_result' ) ) {
+  	wp_schedule_event( time(), 'minute', 'year_reset_result' );
+}
+// print_r( _get_cron_array() );
+function year_reset(){
+	global $wpdb;
+	foreach (get_all_reports_cron() as $test => $test_data) {
+		foreach ($test_data as $user => $data) {			
+			if(array_key_exists('results', $data)){
+				$date1=date_create(date("Y-m-d H:i:s"));
+				$date2=date_create($data['results']->time);				
+				if(date_diff($date1,$date2)->days>=365){
+					$timeoff=(array)$data['results'];
+					$wpdb->insert($wpdb->prefix."lms_test_results_story", $timeoff);
+					$wpdb->delete( $wpdb->prefix."lms_test_results", array( 'test_result_id' => $timeoff['test_result_id'] ) );
+				}
+			}
+			if(array_key_exists('hit_results', $data)){
+				$date1=date_create(date("Y-m-d H:i:s"));
+				$date2=date_create($data['hit_results']->time);							
+				if(date_diff($date1,$date2)->days>=365){
+					$timeoff=(array)$data['hit_results'];
+					$wpdb->insert($wpdb->prefix."lms_test_hits_story", $timeoff);
+					$wpdb->delete( $wpdb->prefix."lms_test_hits", array( 'test_hit_id' => $timeoff['test_hit_id'] ) );
+				}
+			}
+			
+		}
+	}
+}
+
+
+add_filter( 'cron_schedules', 'cron_add_min');
+function cron_add_min( $schedules ) {
+	// Adds once weekly to the existing schedules.
+	$schedules['minute'] = array(
+		'interval' => 60,
+		'display' => __( 'Minute' )
+	);
+	return $schedules;
+}
+
 /*AJAX CLASSES*/
 require_once(IAMD_TD.'/classes/AJAX_Handler.php');
 require_once(IAMD_TD.'/classes/reports_ajax.php');
 require_once(IAMD_TD.'/classes/groups_ajax.php');
+
 

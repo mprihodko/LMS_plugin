@@ -12,7 +12,7 @@
 				<?php if($GLOBALS['users']->is_user_can($group->group_id)==true){ ?>
 					<?php $user_views=$GLOBALS['reports']->get_used_views($group->group_id); ?>
 				<?php }else{ ?>
-					<?php $user_views=$GLOBALS['reports']->get_user_used_views($group->group_id); ?>
+					<?php $user_views=$GLOBALS['reports']->get_user_used_views_in_group($group->group_id); ?>
 				<?php } ?>
 					<?php //$current_user_view=get_used_views_per_user($group->group_id);?>
 					<li id='group-id-<?=$group->group_id?>'>
@@ -33,9 +33,9 @@
 						<?php if($GLOBALS['users']->is_user_can($group->group_id)==true){ ?>
 							<a id="delete-<?=$group->group_id?>" href='javascript:removeGroup(<?=$group->group_id?>);'> [remove] </a>
 							<a href='<?=home_url()?>/groups/?page=lms_new_group&group=<?=$group->group_id?>'> [edit] </a>
-							<a href='#' data-id="<?=$group->group_id?>" class="view_group_reports">[view group reports]</a>
+							<a href='<?=home_url()?>/groups/?page=lms_reports' data-id="<?=$group->group_id?>" class="view_group_reports">[view group reports]</a>
 						<?php }else{ ?>
-							<a href='#' data-id="<?=$group->group_id?>" class="view_group_reports">[view group reports]</a>
+							<!-- <a href='#' data-id="<?=$group->group_id?>" class="view_group_reports">[view group reports]</a> -->
 						<?php } ?>
 						</div>
 					</li>

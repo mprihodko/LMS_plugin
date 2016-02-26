@@ -20,7 +20,7 @@ Class Groups {
 		$this->db=$wpdb;		
 		$this->data=array();
 		$this->user=$GLOBALS['users']->user->ID;		
-		if(isset($_POST['name'])){			 
+		if(isset($_POST['lms_gropup_name'])){			 
 			$insert_id=$this->save_groups();
 			$this->save_group_test($insert_id);
 			$this->save_group_users($insert_id);
@@ -125,6 +125,8 @@ Class Groups {
 			$val=$this->group_id;
 		}elseif(is_array($value)){
 			$val=implode(" OR `".$field."`=", $value);
+		}else{
+			$val=$value;	
 		}
 		$query_param="`".$field."`=".$val;		
 		$query=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_groups` WHERE ".$query_param);
@@ -291,7 +293,7 @@ Class Groups {
 
 	public function save_groups(){
 		$this->data['group_id']=((isset($_POST['group_id']))?strip_tags(trim($_POST['group_id'])) : '');
-		$this->data['name']=((isset($_POST['name']))?strip_tags(trim($_POST['name'])) : '');
+		$this->data['name']=((isset($_POST['lms_gropup_name']))?strip_tags(trim($_POST['lms_gropup_name'])) : '');
 		$this->data['view_limit']=((isset($_POST['view_limit_group']))?strip_tags(trim($_POST['view_limit_group'])) : '');
 		$this->data['text_id']=((isset($_POST['text_id']))?strip_tags(trim($_POST['text_id'])) : '');
 		$this->data['description']=((isset($_POST['description']))?strip_tags(trim($_POST['description'])) : '');

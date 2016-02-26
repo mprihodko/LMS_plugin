@@ -198,15 +198,26 @@ Class Tests{
 
 
 
-
 #####################################################################################################################
 #																													#
 #  THE TEST DATA 																									#
 #																													#
 #####################################################################################################################
 
-
-	public function get_group_tests($group_id){
+	public function get_available_tests(){
+		if(!is_user_logged_in()) return;
+		$user_groups=$GLOBALS['users']->get_user_groups();
+		foreach ($user_groups as $key => $value) {
+			$tests[$value->group_id]['group']=$GLOBALS['groups']->get_group('group_id', $value->group_id);
+			$tests[$value->group_id]['tests']=$this->get_group_tests($value->group_id);
+		}
+		// echo "<pre>";
+		// var_dump($tests);
+		// echo "</pre>";
+		return $tests;
+	}
+	public function get_group_tests($group_id=null){
+		if($group_id==null) return;
 		if(is_array($group_id)){
 			$query_param=implode(" OR `group_id`=", $group_id);
 		}else{

@@ -20,3 +20,6 @@ define('ASSETS_DIR', IAMD_BASE_URL.'assets/');
 define('TPL_DIR', IAMD_TD.'frontend/');
 
 require_once(IAMD_TD.'/core/init.php');
+$GLOBALS['db']=new LMS_db();
+register_activation_hook( __FILE__,  array($GLOBALS['db'], 'create_db'));
+register_activation_hook( __FILE__,  array($GLOBALS['db'], 'add_user_roles'));

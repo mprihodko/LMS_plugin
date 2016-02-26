@@ -64,7 +64,7 @@
 
 				<?php }else{?>
 
-					<img src="<?=home_url()?>/wp-content/uploads/2013/06/badge.jpg">	
+					<img src="<?=home_url()?>/wp-content/plugins/LMSinstruct/assets/images/no-image.jpg">	
 
 				<?php } ?>
 				</div>

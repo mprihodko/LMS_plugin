@@ -724,6 +724,9 @@ body.toplevel_page_lms_groups #wpcontent #admin_groups ul .group_row ul.group-da
 body.toplevel_page_lms_groups #wpcontent #admin_groups ul .group_row ul.group-data-list li.actions a.view_group_reports {
   background: #30A220;
 }
+body.toplevel_page_lms_groups #wpcontent #admin_groups ul .group_row ul.group-data-list li.actions a.copy_group {
+  background: #30A220;
+}
 body.toplevel_page_lms_groups #wpcontent #admin_groups .group_pagination {
   display: table;
   width: 100%;

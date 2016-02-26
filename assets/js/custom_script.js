@@ -1274,14 +1274,71 @@ jQuery(document).ready(function($){
 				
 			});
 		},
+		getUserReports:function(){
+			$("#generate_user_reports").on("click", function(){
+				var indentificators=[$(this).data('user')];
 
+				/*apply filters*/
+				if($("#attempts").prop('checked'))	var attempts="true"; else var attempts="false";
+				if($("#hits").prop('checked')) var hits="true"; else var hits="false";
+				var day_from = $("#day_from").val(); 
+				var day_to = $("#day_to").val(); 
+				if(day_from=='') day_from="0001-01-01";
+				if(day_to=='') day_to="9999-01-01";				
+
+				/*send ajax query*/				
+				$.ajax({
+					type:"POST",
+				  	url: ajaxurl,
+				  	data: {
+					    action: "get_reports_user_report",						    
+					    data_value: indentificators,
+					    attempts: attempts,
+					    hits: hits,
+					    day_from: day_from,
+					    day_to: day_to
+					}, 
+					success: function(json) {
+						$("#results_table").html('');
+						var template = $("#results_template").html();							
+						var resp=$.parseJSON(json);
+						if(resp){
+							$.each( resp, function (index, value){
+								$.each( value, function(k, v){
+
+									var row = template
+						              .replace(/{num}/g,					((v.num)?v.num:'-'))							             
+						              .replace(/{first_name}/g,				((v.first_name)?v.first_name:'-'))
+						              .replace(/{last_name}/g,				((v.last_name)?v.last_name:''))
+						              .replace(/{post_title}/g,				((v.post_title)?v.post_title:'no-name'))
+						              .replace(/{score}/g,					((v.score)?v.score:'-'))
+						              .replace(/{symbol}/g, 				((v.symbol)?v.symbol:'-'))										
+						              .replace(/{time}/g, 					((v.time)?v.time:'-'))	
+						              .replace(/{date_hits}/g,  			((v.date_hits)?v.date_hits:v.time))
+						              .replace(/{attempts}/g,				((v.attempts)?v.attempts:'0'))
+						              .replace(/{attempts_limit}/g,			((v.attempts_limit)?v.attempts_limit:'0'))
+						              .replace(/{hits}/g,					((v.hits)?v.hits:v.attempts))
+						              .replace(/{hits_limit}/g,				((v.hits_limit)?v.hits_limit:'0'))
+						              .replace(/{lms_interaction_date}/g,	((v.lms_interaction_date)?v.lms_interaction_date:'-'))	
+						              .replace(/{due}/g,					((v.due)?v.due:'-'));					           
+					  					// $("#downloadCsv").attr('href', v.filename+'.csv');
+										$("#results_table").append(row);
+								});
+							});
+				  			// $("#downloadCsv").show();
+						}
+					}
+				});
+			});
+		},
 		/*init methods*/
 		init:function(){
 			_this.changeReportType();
 			_this.searchGroupReports();
 			_this.searchTestReports();
 			_this.searchUserReports();
-			_this.getReports();			
+			_this.getReports();	
+			_this.getUserReports();		
 		}
 	}
 
