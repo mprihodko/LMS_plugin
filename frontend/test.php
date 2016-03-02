@@ -1,4 +1,6 @@
 <?php global $post; ?>
+<?php if(isset($_GET['group']) && !isset($_COOKIE['current_group'])) $_COOKIE['current_group']=$_GET['group']; ?>
+
 <?php if(!isset($_GET['part']) && !isset($_GET['certificate'])){ wp_redirect(get_the_permalink()."?part=".$GLOBALS['tests']->get_part(get_the_ID())); } ?>
 <?php $user=$GLOBALS['users']->user ?>
 <?php $media = unserialize($GLOBALS['tests']->has_media($post->ID)); ?>
@@ -82,4 +84,12 @@
 <?php else: ?>
 	<?php include(TPL_DIR."loops/sorry_page.php");?>	
 <?php endif; ?>
+<script type="text/javascript">
+	jQuery(document).ready(function(){		
+		jQuery.cookie('current_group', '<?=$_GET['group']?>', {
+		    expires: 1,
+		    path: '/',
+		});
+	})
+</script>
 <?php get_footer(); ?>

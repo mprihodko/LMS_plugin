@@ -75,7 +75,7 @@
 				</div>
 				
 				<div class="test_content_wrap test-list-col" onclick="javascript:window.location='<?php echo get_the_permalink($test->ID); ?>?part=<?=$GLOBALS['tests']->get_part($test->ID)?>&group=<?=$group?>'">
-					<?php $content = get_the_content('Read More..'); ?>
+					<?php $content = $post->post_content; ?>
 					<?php if($content && strlen($content)>250)	print substr(strip_tags($content), 0, 250).'...'; else print $content; ?>			
 				</div>
 				<div class="test_resours_wrap test-list-col">

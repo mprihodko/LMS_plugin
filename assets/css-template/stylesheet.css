@@ -20,6 +20,10 @@
 .printSelection {
   display: block!important;
 }
+.group_title_archive {
+  line-height: 2em;
+  border-bottom: 2px dashed #444;
+}
 @media screen and (min-width: 861px) {
   .lms {
     float: left;
@@ -132,6 +136,9 @@
   .lms .wrap.groups-list ul.groups-available li div.actions-group-block a {
     display: block;
   }
+  .lms .wrap.groups-list ul.groups-available li div.actions-group-block a:hover {
+    color: #444;
+  }
   .lms ul.test-list {
     float: left;
     margin: 0px;
@@ -155,6 +162,9 @@
     display: inline-block;
     margin: 0 5px 20px 0;
     padding-bottom: 5px;
+  }
+  .lms ul.test-list li.test .menu-links h4 a {
+    color: #000000 !important;
   }
   .lms ul.test-list li.test .contentTest {
     float: left;
@@ -318,6 +328,9 @@
   .lms .wrap.groups-list ul.groups-available li div.actions-group-block a {
     font-size: 14px;
   }
+  .lms .wrap.groups-list ul.groups-available li div.actions-group-block a:hover {
+    color: #444;
+  }
   .lms ul.test-list {
     float: left;
     margin: 0px;
@@ -341,6 +354,9 @@
     display: block;
     margin: 0 0 10px;
     padding-bottom: 5px;
+  }
+  .lms ul.test-list li.test .menu-links h4 a {
+    color: #000000 !important;
   }
   .lms ul.test-list li.test .contentTest {
     float: left;
@@ -505,6 +521,9 @@
     text-align: center;
     font-size: 14px;
   }
+  .lms .wrap.groups-list ul.groups-available li div.actions-group-block a:hover {
+    color: #444;
+  }
   .lms ul.test-list {
     float: left;
     margin: 0px;
@@ -529,6 +548,9 @@
     margin: 0 0 10px;
     padding-bottom: 5.26315789px;
     text-align: left;
+  }
+  .lms ul.test-list li.test .menu-links h4 a {
+    color: #000000 !important;
   }
   .lms ul.test-list li.test .contentTest {
     float: left;
@@ -699,6 +721,9 @@
   .lms .wrap.groups-list ul.groups-available li div.actions-group-block a {
     font-size: 11px;
   }
+  .lms .wrap.groups-list ul.groups-available li div.actions-group-block a:hover {
+    color: #444;
+  }
   .lms ul.test-list {
     float: left;
     margin: 0px;
@@ -723,6 +748,9 @@
     margin: 0 0 10px;
     padding-bottom: 5.26315789px;
     text-align: center;
+  }
+  .lms ul.test-list li.test .menu-links h4 a {
+    color: #000000 !important;
   }
   .lms ul.test-list li.test .contentTest {
     float: left;
@@ -1465,6 +1493,31 @@
 .wp-editor-container {
   border: 1px solid #cfcfcf;
 }
+.form-table,
+.media_inputs #media_section,
+.video_inputs .attach {
+  display: table;
+}
+.form-table .add-attach-video,
+.media_inputs #media_section .add-attach-video,
+.video_inputs .attach .add-attach-video,
+.form-table .add-attach-media,
+.media_inputs #media_section .add-attach-media,
+.video_inputs .attach .add-attach-media,
+.form-table .remove-question,
+.media_inputs #media_section .remove-question,
+.video_inputs .attach .remove-question,
+.form-table .add-question,
+.media_inputs #media_section .add-question,
+.video_inputs .attach .add-question {
+  background: #F67F45;
+  color: #FFF;
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  height: 30px;
+  padding: 0 15px;
+}
 .add-attach-video,
 .add-attach-media,
 .remove-question,
@@ -1472,9 +1525,17 @@
   background: #F67F45;
   color: #FFF;
   text-align: center;
-  display: inline;
+  display: table-cell;
+  vertical-align: middle;
   height: 30px;
   padding: 0 15px;
+}
+.add-attach-video:hover,
+.add-attach-media:hover,
+.remove-question:hover,
+.add-question:hover {
+  opacity: 0.8;
+  cursor: pointer;
 }
 .repeatable-remove,
 .repeatable-add {
@@ -1915,13 +1976,13 @@ body .ui-button-text:focus {
     padding-left: 30px;
   }
   .lms #interaction_course ul#interaction_tabs li.parent > a.check {
-    background-image: url('/wp-content/uploads/2015/11/green-check.png');
+    background-image: url('/wp-content/plugins/LMSinstruct/assets/images/green-check.png');
     background-position: left!important;
     background-repeat: no-repeat !important;
     background-size: 25px;
   }
   .lms #interaction_course ul#interaction_tabs li.parent > a.no-check {
-    background-image: url('/wp-content/uploads/2015/11/red-x.png');
+    background-image: url('/wp-content/plugins/LMSinstruct/assets/images/red-x.png');
     background-position: left!important;
     background-repeat: no-repeat !important;
     background-size: 25px;
@@ -1949,13 +2010,13 @@ body .ui-button-text:focus {
     padding-left: 30px;
   }
   .lms #interaction_course ul#interaction_tabs li.parent > ul li > a.check {
-    background-image: url('/wp-content/uploads/2015/11/green-check.png');
+    background-image: url('/wp-content/plugins/LMSinstruct/assets/images/green-check.png');
     background-position: left!important;
     background-repeat: no-repeat !important;
     background-size: 25px;
   }
   .lms #interaction_course ul#interaction_tabs li.parent > ul li > a.no-check {
-    background-image: url('/wp-content/uploads/2015/11/red-x.png');
+    background-image: url('/wp-content/plugins/LMSinstruct/assets/images/red-x.png');
     background-position: left!important;
     background-repeat: no-repeat !important;
     background-size: 25px;
@@ -2177,13 +2238,13 @@ body .ui-button-text:focus {
     padding-left: 30px;
   }
   .lms #interaction_course ul#interaction_tabs li.parent > a.check {
-    background-image: url('/wp-content/uploads/2015/11/green-check.png');
+    background-image: url('/wp-content/plugins/LMSinstruct/assets/images/green-check.png');
     background-position: left!important;
     background-repeat: no-repeat !important;
     background-size: 25px;
   }
   .lms #interaction_course ul#interaction_tabs li.parent > a.no-check {
-    background-image: url('/wp-content/uploads/2015/11/red-x.png');
+    background-image: url('/wp-content/plugins/LMSinstruct/assets/images/red-x.png');
     background-position: left!important;
     background-repeat: no-repeat !important;
     background-size: 25px;
@@ -2211,13 +2272,13 @@ body .ui-button-text:focus {
     padding-left: 30px;
   }
   .lms #interaction_course ul#interaction_tabs li.parent > ul li > a.check {
-    background-image: url('/wp-content/uploads/2015/11/green-check.png');
+    background-image: url('/wp-content/plugins/LMSinstruct/assets/images/green-check.png');
     background-position: left!important;
     background-repeat: no-repeat !important;
     background-size: 25px;
   }
   .lms #interaction_course ul#interaction_tabs li.parent > ul li > a.no-check {
-    background-image: url('/wp-content/uploads/2015/11/red-x.png');
+    background-image: url('/wp-content/plugins/LMSinstruct/assets/images/red-x.png');
     background-position: left!important;
     background-repeat: no-repeat !important;
     background-size: 25px;
@@ -2441,13 +2502,13 @@ body .ui-button-text:focus {
     padding-left: 30px;
   }
   .lms #interaction_course ul#interaction_tabs li.parent > a.check {
-    background-image: url('/wp-content/uploads/2015/11/green-check.png');
+    background-image: url('/wp-content/plugins/LMSinstruct/assets/images/green-check.png');
     background-position: left!important;
     background-repeat: no-repeat !important;
     background-size: 25px;
   }
   .lms #interaction_course ul#interaction_tabs li.parent > a.no-check {
-    background-image: url('/wp-content/uploads/2015/11/red-x.png');
+    background-image: url('/wp-content/plugins/LMSinstruct/assets/images/red-x.png');
     background-position: left!important;
     background-repeat: no-repeat !important;
     background-size: 25px;
@@ -2475,13 +2536,13 @@ body .ui-button-text:focus {
     padding-left: 30px;
   }
   .lms #interaction_course ul#interaction_tabs li.parent > ul li > a.check {
-    background-image: url('/wp-content/uploads/2015/11/green-check.png');
+    background-image: url('/wp-content/plugins/LMSinstruct/assets/images/green-check.png');
     background-position: left!important;
     background-repeat: no-repeat !important;
     background-size: 25px;
   }
   .lms #interaction_course ul#interaction_tabs li.parent > ul li > a.no-check {
-    background-image: url('/wp-content/uploads/2015/11/red-x.png');
+    background-image: url('/wp-content/plugins/LMSinstruct/assets/images/red-x.png');
     background-position: left!important;
     background-repeat: no-repeat !important;
     background-size: 25px;
@@ -2705,13 +2766,13 @@ body .ui-button-text:focus {
     padding-left: 30px;
   }
   .lms #interaction_course ul#interaction_tabs li.parent > a.check {
-    background-image: url('/wp-content/uploads/2015/11/green-check.png');
+    background-image: url('/wp-content/plugins/LMSinstruct/assets/images/green-check.png');
     background-position: left!important;
     background-repeat: no-repeat !important;
     background-size: 25px;
   }
   .lms #interaction_course ul#interaction_tabs li.parent > a.no-check {
-    background-image: url('/wp-content/uploads/2015/11/red-x.png');
+    background-image: url('/wp-content/plugins/LMSinstruct/assets/images/red-x.png');
     background-position: left!important;
     background-repeat: no-repeat !important;
     background-size: 25px;
@@ -2739,13 +2800,13 @@ body .ui-button-text:focus {
     padding-left: 30px;
   }
   .lms #interaction_course ul#interaction_tabs li.parent > ul li > a.check {
-    background-image: url('/wp-content/uploads/2015/11/green-check.png');
+    background-image: url('/wp-content/plugins/LMSinstruct/assets/images/green-check.png');
     background-position: left!important;
     background-repeat: no-repeat !important;
     background-size: 25px;
   }
   .lms #interaction_course ul#interaction_tabs li.parent > ul li > a.no-check {
-    background-image: url('/wp-content/uploads/2015/11/red-x.png');
+    background-image: url('/wp-content/plugins/LMSinstruct/assets/images/red-x.png');
     background-position: left!important;
     background-repeat: no-repeat !important;
     background-size: 25px;

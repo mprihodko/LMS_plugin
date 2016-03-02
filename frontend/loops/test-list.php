@@ -1,10 +1,10 @@
 <?php 	
 	if(isset($_GET['group_name'])): 
-		$_SESSION['current_group']=$_GET['group_name'];
-		$group = $_SESSION['current_group'];
+		$_COOKIE['current_group']=$_GET['group_name'];
+		$group = $_COOKIE['current_group'];
 	elseif(current_user_can('administrator')):
-		$_SESSION['current_group']="administrator";
-		$group = $_SESSION['current_group'];
+		$_COOKIE['current_group']="administrator";
+		$group = $_COOKIE['current_group'];
 	endif; 
 ?>	
 <ul class='test-list'>

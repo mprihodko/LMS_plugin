@@ -1,6 +1,6 @@
 <div class='lms'>
 <?php if(isset($_POST["answer"])): ?>
-	<?php if($GLOBALS['tests']->is_passed($_POST["answer"], get_the_ID(), $_SESSION['current_group'])): ?>
+	<?php if($GLOBALS['tests']->is_passed($_POST["answer"], get_the_ID(), $_COOKIE['current_group'])): ?>
 		<h2>Congratulations, you passed!</h2>
 		<p>Your score: <?=$GLOBALS['tests']->the_score?></p>
 	<?php else:  ?>

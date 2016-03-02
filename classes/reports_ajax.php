@@ -154,7 +154,7 @@ class Hits_Add extends AJAX_Handler{
 	function callback(){
 		$test_id=$_GET['test_id'];
 		$user_id=$_GET['user_id'];
-		$group_id=(($_SESSION['current_group']=="administrator")? 0 : $_SESSION['current_group']);
+		$group_id=(($_COOKIE['current_group']=="administrator")? 0 : $_COOKIE['current_group']);
 		$query=$this->db->insert($this->db->prefix."lms_test_hits", array(	"test_id"=>$test_id,
 																	"group_id"=>$group_id,
 																	"user_id"=>$user_id,

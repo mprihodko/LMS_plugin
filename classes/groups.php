@@ -416,12 +416,12 @@ Class Groups {
 	}
 
 	public function identify_group(){
-		if($_SESSION['current_group']=='administrator') return true;
+		if($_COOKIE['current_group']=='administrator') return true;
 		global $post;
 		$query=$this->db->get_results("SELECT `group_id` FROM `".$this->db->prefix."lms_group_tests` WHERE `test_id`=".$post->ID);
 		if(!$query) return false;
 		foreach ($query as $key => $value) {
-			if($value->group_id == $_SESSION['current_group']) return $value->group_id;
+			if($value->group_id == $_COOKIE['current_group']) return $value->group_id;
 		}
 	}
 
