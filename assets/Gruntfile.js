@@ -5,18 +5,18 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     concat: {
         dist: {
-        src: ['js/frontend.js','js/admin_interaction.js','js/admin_test.js', 'js/groups_edit.js', 'js/reports_functions.js'], 
-        dest: 'js/custom_script.js'   
-        // src: ['js/admin_interaction.js','js/admin_test.js', 'js/groups_edit.js', 'js/reports_functions.js'], 
-        // dest: 'js/admin.js'               
+        // src: ['js/frontend.js','js/admin_interaction.js','js/admin_test.js', 'js/groups_edit.js', 'js/reports_functions.js'], 
+        // dest: 'js/custom_script.js'   
+        src: ['js/admin_interaction.js','js/admin_test.js', 'js/groups_edit.js', 'js/reports_functions.js', 'js/admin-settings.js'], 
+        dest: 'js/admin.js'               
         }
     },
     uglify: {
         build: {
-            // src:'js/admin.js',  
-            // dest:'js_min/admin.min.js',  
-            src:'js/custom_script.js',  
-            dest:'js_min/custom_script.min.js',          
+            src:'js/admin.js',  
+            dest:'js_min/admin.min.js',  
+            // src:'js/custom_script.js',  
+            // dest:'js_min/custom_script.min.js',          
         }
     },
     // compass: {

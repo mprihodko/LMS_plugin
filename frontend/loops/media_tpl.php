@@ -2,7 +2,7 @@
 	<h2>Media Attached Files</h2>
 	<?php foreach ($media as $key => $value) { ?>
 		<?php if($value['pos']=='before'){ ?>
-			<a href="<?=$value['url']?>"><?=substr($value['file'], strripos($value['file'], '/')+1)?></a>
+			<a class="fancybox" rel="group" href="<?=$value['url']?>"><?=substr($value['file'], strripos($value['file'], '/')+1)?></a>
 		<?php }else{
 			$after[]=$value;
 			} ?>
@@ -28,3 +28,8 @@
 		<a href="<?=the_permalink()?>?part=questions">Next Part</a>
 	</div>
 <?php } ?>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".fancybox").fancybox();
+	});
+</script>

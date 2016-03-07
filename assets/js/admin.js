@@ -884,14 +884,71 @@ jQuery(document).ready(function($){
 				
 			});
 		},
+		getUserReports:function(){
+			$("#generate_user_reports").on("click", function(){
+				var indentificators=[$(this).data('user')];
 
+				/*apply filters*/
+				if($("#attempts").prop('checked'))	var attempts="true"; else var attempts="false";
+				if($("#hits").prop('checked')) var hits="true"; else var hits="false";
+				var day_from = $("#day_from").val(); 
+				var day_to = $("#day_to").val(); 
+				if(day_from=='') day_from="0001-01-01";
+				if(day_to=='') day_to="9999-01-01";				
+
+				/*send ajax query*/				
+				$.ajax({
+					type:"POST",
+				  	url: ajaxurl,
+				  	data: {
+					    action: "get_reports_user_report",						    
+					    data_value: indentificators,
+					    attempts: attempts,
+					    hits: hits,
+					    day_from: day_from,
+					    day_to: day_to
+					}, 
+					success: function(json) {
+						$("#results_table").html('');
+						var template = $("#results_template").html();							
+						var resp=$.parseJSON(json);
+						if(resp){
+							$.each( resp, function (index, value){
+								$.each( value, function(k, v){
+
+									var row = template
+						              .replace(/{num}/g,					((v.num)?v.num:'-'))							             
+						              .replace(/{first_name}/g,				((v.first_name)?v.first_name:'-'))
+						              .replace(/{last_name}/g,				((v.last_name)?v.last_name:''))
+						              .replace(/{post_title}/g,				((v.post_title)?v.post_title:'no-name'))
+						              .replace(/{score}/g,					((v.score)?v.score:'-'))
+						              .replace(/{symbol}/g, 				((v.symbol)?v.symbol:'-'))										
+						              .replace(/{time}/g, 					((v.time)?v.time:'-'))	
+						              .replace(/{date_hits}/g,  			((v.date_hits)?v.date_hits:v.time))
+						              .replace(/{attempts}/g,				((v.attempts)?v.attempts:'0'))
+						              .replace(/{attempts_limit}/g,			((v.attempts_limit)?v.attempts_limit:'0'))
+						              .replace(/{hits}/g,					((v.hits)?v.hits:v.attempts))
+						              .replace(/{hits_limit}/g,				((v.hits_limit)?v.hits_limit:'0'))
+						              .replace(/{lms_interaction_date}/g,	((v.lms_interaction_date)?v.lms_interaction_date:'-'))	
+						              .replace(/{due}/g,					((v.due)?v.due:'-'));					           
+					  					// $("#downloadCsv").attr('href', v.filename+'.csv');
+										$("#results_table").append(row);
+								});
+							});
+				  			// $("#downloadCsv").show();
+						}
+					}
+				});
+			});
+		},
 		/*init methods*/
 		init:function(){
 			_this.changeReportType();
 			_this.searchGroupReports();
 			_this.searchTestReports();
 			_this.searchUserReports();
-			_this.getReports();			
+			_this.getReports();	
+			_this.getUserReports();		
 		}
 	}
 
@@ -904,3 +961,165 @@ jQuery(document).ready(function($){
 	});	
 })(jQuery);
 
+
+(function($){
+	var _this={
+
+
+		getUserByName:function(){
+			$("#user_field").on("keyup",function(){
+				var search = $(this).val();
+				console.log('search ' , search);
+				$.ajax({
+					type:"GET",
+					url: ajaxurl,
+				  	data: {
+					    action: "search_users_report",
+					    value: encodeURIComponent(search)
+					}, 
+					success: function(result) {
+						if(result==null) return	
+						var users=$.parseJSON(result);
+						if(users==null) return	
+						$('#user_suggestions').html('');
+						$('#user_suggestions').fadeIn();
+						if(users.length>1){		
+							$.each(users, function(k, v) {
+								$('#user_suggestions').append("<li><a href=\"javascript:autoUser("+v.ID+", '"+v.user_login+"');\">"+v.user_login+"</a></li>");
+							});
+						}else if(users.length==1){
+							$.each(users, function(k, v) {
+								$("#user_field").attr("value", v.user_login);
+								$("#user_id").attr("value", v.ID);
+							});
+							$('#user_suggestions').fadeOut();
+							_this.getUserGroups()
+						}		
+					}
+				})
+			})
+		},
+
+		getUserGroups:function(){
+			var user_id = $("#user_id").val();
+			console.log('user_id ' , user_id);
+			if(user_id!=0){
+				$.ajax({
+					type:"GET",
+					url: ajaxurl,
+				  	data: {
+					    action: "search_user_groups",
+					    value: encodeURIComponent(user_id)
+					}, 
+					success: function(json) {
+						var resp=$.parseJSON(json);
+						var output='<option value="0">Select Group</option>';
+						$("#group_field").html('')
+						$("#group_field").append(output);			
+						$.each(resp, function(index, data){
+							var output='<option value="'+data.group_id+'">'+data.name+'</option>';
+							$("#group_field").append(output);				
+						})
+						$("#group_field").attr('disabled', false);					
+					}
+				})
+			}
+		},
+
+		getTests:function(){
+			$("#group_field").on("change", function(){
+				var group_id = $(this).val();
+				$.ajax({
+					type:"GET",
+					url: ajaxurl,
+				  	data: {
+					    action: "search_user_group_test",
+					    value: encodeURIComponent(group_id)
+					}, 
+					success: function(json) {
+						var resp=$.parseJSON(json);
+						var output='<option value="0">Select Test</option>';
+						$("#test_field").html('')
+						$("#test_field").append(output);			
+						$.each(resp, function(index, data){
+							var output='<option value="'+data.ID+'">'+data.post_title+'</option>';
+							$("#test_field").append(output);				
+						})
+						$("#test_field").attr('disabled', false);					
+					}
+				})
+			});
+		},
+
+		writeUser:function(){
+			$("#assign").on("click", function(){
+				var user_id = $("#user_id").val();
+				var group_id = $("#group_field").val();
+				var test_id = $("#test_field").val();
+				var date = $("#date_field").val();
+				if(_this.validate(user_id) && _this.validate(group_id) && _this.validate(test_id) && _this.validate(date)){
+					$.ajax({
+					type:"GET",
+					url: ajaxurl,
+				  	data: {
+					    action: "write_user_test",
+					    user: 	encodeURIComponent(user_id),
+					    group: 	encodeURIComponent(group_id),
+					    test: 	encodeURIComponent(test_id),
+					    date: 	encodeURIComponent(date)
+					}, 
+					success: function(json) {
+										
+					}
+				})
+				}else{
+					alert("Error: Please check fields data!!!");
+				}
+			});
+		},
+
+		validate:function(item){
+			if(item==0) return false;
+			if(item=="") return false;
+			if(item==null) return false;
+			return true;
+		},
+
+		init:function(){
+			_this.getUserByName();	
+			_this.getTests();
+			_this.writeUser();					
+			
+		}
+	}
+
+	_this.init();
+
+})(jQuery)
+
+function autoUser(id, login){
+	jQuery("#user_field").attr("value", login);
+	jQuery("#user_id").attr("value", id);
+	getUserGroups(id);
+}
+function getUserGroups(user_id){	
+	jQuery.ajax({
+		type:"GET",
+		url: ajaxurl,
+	  	data: {
+		    action: "search_user_groups",
+		    value: encodeURIComponent(user_id)
+		}, 
+		success: function(json) {
+			var resp=jQuery.parseJSON(json);
+			var output='<option value="0">Select Group</option>';
+			jQuery("#group_field").html('')
+			jQuery("#group_field").append(output);			
+			jQuery.each(resp, function(index, data){
+				var output='<option value="'+data.group_id+'">'+data.name+'</option>';
+				jQuery("#group_field").append(output);				
+			})
+			jQuery("#group_field").attr('disabled', false);
+		}
+	})
+}		

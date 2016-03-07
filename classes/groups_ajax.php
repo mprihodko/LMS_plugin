@@ -3,10 +3,7 @@
 /*********************************************************TESTS*****************************************************/
 
 class Group_Tests extends AJAX_Handler {
-
-	function _constract(){
-		add_action('wp_ajax_maxim',array($this,'test'));
-	}
+	
     function callback() {
 
         $tests = $this->db->get_results(
@@ -23,6 +20,76 @@ class Group_Tests extends AJAX_Handler {
     }
 }
 new Group_Tests('search_tests');
+
+class Write_Tests extends AJAX_Handler {
+  
+    function callback() {
+      $getTest=$GLOBALS['reports']->get_one_report($_GET['user'], $_GET['test'], $_GET['group']);
+
+      if(!$getTest){ 
+
+
+        $insert=$this->db->insert($this->db->prefix."lms_test_results", array("group_id"=>$_GET['group'],
+                                                                      "test_id"=>$_GET['test'],
+                                                                      "user_id"=>$_GET['user'],
+                                                                      "score"=>100,
+                                                                      "pass"=>1,
+                                                                      "correct"=>count($GLOBALS['tests']->get_questions($_GET['test'])),
+                                                                      "answers"=>"auto",
+                                                                      "time"=>$_GET['date']." ".date("H:i:s")));
+        if($insert) echo json_encode(array("status"=>"success")); 
+
+
+      }else{
+
+        $attempts=count($getTest);        
+        $attempts_used=$GLOBALS['reports']->get_attempts_limit($_GET['test'], $_GET['group']);       
+        if($attempts>=$attempts_used){
+          $latest=$getTest[$attempts-1]->test_result_id;
+          $update=$this->db->update($this->db->prefix."lms_test_results", array("group_id"=>$_GET['group'],
+                                                                      "test_id"=>$_GET['test'],
+                                                                      "user_id"=>$_GET['user'],
+                                                                      "score"=>100,
+                                                                      "pass"=>1,
+                                                                      "correct"=>count($GLOBALS['tests']->get_questions($_GET['test'])),
+                                                                      "answers"=>"auto",
+                                                                      "time"=>$_GET['date']." ".date("H:i:s")),
+                                                                      array("test_result_id"=>$latest));
+          if($update) echo json_encode(array("status"=>"success")); 
+
+
+        }else{
+
+
+          $insert=$this->db->insert($this->db->prefix."lms_test_results", array("group_id"=>$_GET['group'],
+                                                                      "test_id"=>$_GET['test'],
+                                                                      "user_id"=>$_GET['user'],
+                                                                      "score"=>100,
+                                                                      "pass"=>1,
+                                                                      "correct"=>count($GLOBALS['tests']->get_questions($_GET['test'])),
+                                                                      "answers"=>"auto",
+                                                                      "time"=>$_GET['date']." ".date("H:i:s")));
+          if($insert) echo json_encode(array("status"=>"success")); 
+
+           
+        }
+      }      
+      die;
+    }
+}
+new Write_Tests('write_user_test');
+
+
+class Search_Group_Tests extends AJAX_Handler {
+  
+    function callback() {
+      $tests = $GLOBALS['groups']->get_group_test($_GET['value'], '0', -1);
+      echo json_encode($tests);
+      die();
+    }
+}
+new Search_Group_Tests('search_user_group_test');
+
 
 /* GROUP Remove Test */
 class Group_Remove_Test extends AJAX_Handler {
@@ -58,6 +125,18 @@ class Group_Users extends AJAX_Handler {
     }
 }
 new Group_Users('search_users');
+
+class Get_Group_User extends AJAX_Handler {
+    function callback() {
+        $groups = $GLOBALS['users']->get_user_groups($_GET['value']);
+        foreach ($groups as $key => $value) {
+          $response[]=$GLOBALS['groups']->get_group('group_id', $value->group_id)[0];
+        }        // var_dump($groups);
+        echo json_encode($response);
+        die();
+    }
+}
+new Get_Group_User('search_user_groups');
 
 /* GROUP Remove USER */
 class Group_Remove_User extends AJAX_Handler {
@@ -165,7 +244,10 @@ class Group_Copy extends AJAX_Handler {
         unset($get_data[0]->group_id);
         $get_data[0]->name=$get_data[0]->name."-copy";
         $copy=(array)$get_data[0];        
-        $this->db->insert($this->db->prefix."lms_groups", $copy);        
+        $this->db->insert($this->db->prefix."lms_groups", $copy);  
+        $this->db->insert($this->db->prefix."lms_group_users", array("user_level"=>2,
+                                                                     "user_id"=>$GLOBALS['users']->user->ID,
+                                                                     "group_id"=>$this->db->insert_id));      
         echo json_encode(array("result"=>'success')); die();
     }
 }

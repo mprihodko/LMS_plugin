@@ -28,8 +28,8 @@
 									<ul id="'.$field['id'].'-repeatable" class="mixtape_repeatable">
 										<?php $i = 0; ?>
 										<li class="original" rel-id="0">
-										<input type="radio" class="question-answer-radio" name="answers[]" />
-										<input type="text" class="question-answer" name="questions[][]" id="<?=$field['id']?>" value="" size="30" />
+										<input type="radio" class="question-answer-radio" name="answers[]"  />
+										<input type="text" class="question-answer" name="questions[][]" id="<?=$field['id']?>" value="" size="30"  />
 										<a class="repeatable-remove button" href="#">-</a></li>
 									</ul>
 								</fieldset>
@@ -39,7 +39,7 @@
 								<?php foreach($questions as $k => $question) { ?>
 									<div class="question" rel-id="<?=$question->num?>" style="margin-bottom:20px;">
 										<span>Title: </span>
-										<input type="text" class="question-title" name="titles[<?=$question->num?>]" value="<?=htmlentities($question->title)?>" />
+										<input type="text" class="question-title" name="titles[<?=$question->num?>]" value="<?=htmlentities($question->title)?>"  />
 										<a class="repeatable-add button" href="#">+</a>
 										<fieldset>
 											<ul id="<?=$field['id']?>-repeatable" class="mixtape_repeatable">
@@ -47,8 +47,8 @@
 											<?php $options = json_decode($question->options,1); ?>
 											<?php foreach($options as $kk => $o) { ?>
 												<li class="<?=(($kk == 0) ? 'original' : 'n')?>" rel-id="<?=$kk?>">
-													<input type="radio" class="question-answer-radio" name="answers[<?=$question->num?>]" value="<?=$kk?>" <?=($question->answer == $kk ? 'checked': '')?> />
-													<input type="text" class="question-answer" name="questions[<?=$question->num?>][<?=$kk?>]" id="<?=$field['id']?>" value="<?=htmlentities($o)?>" size="30" />
+													<input type="radio" class="question-answer-radio"  name="answers[<?=$question->num?>]" value="<?=$kk?>" <?=($question->answer == $kk ? 'checked': '')?>  />
+													<input type="text" class="question-answer" name="questions[<?=$question->num?>][<?=$kk?>]" id="<?=$field['id']?>" value="<?=htmlentities($o)?>" size="30"  />
 													<a class="repeatable-remove button" href="#">-</a>
 												</li>
 											<?php } ?>

@@ -415,8 +415,7 @@ Class Groups {
 
 	}
 
-	public function identify_group(){
-		if($_COOKIE['current_group']=='administrator') return true;
+	public function identify_group(){		
 		global $post;
 		$query=$this->db->get_results("SELECT `group_id` FROM `".$this->db->prefix."lms_group_tests` WHERE `test_id`=".$post->ID);
 		if(!$query) return false;

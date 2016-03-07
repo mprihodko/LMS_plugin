@@ -3,6 +3,7 @@
 /*Requires*/
 require_once(IAMD_TD.'/core/js_wp_editor.php');
 require_once(IAMD_TD.'/classes/database.php');
+require_once(IAMD_TD.'/classes/admin.php');
 require_once(IAMD_TD.'/classes/groups.php');
 require_once(IAMD_TD.'/classes/users.php');
 require_once(IAMD_TD.'/classes/tests.php');
@@ -14,6 +15,12 @@ require_once(IAMD_TD.'/classes/templates.php');
 add_action ('plugins_loaded', 'init_classes');
 function init_classes(){	
 	$GLOBALS['users']=new Users();
+	if(is_user_logged_in()){
+		if($GLOBALS['users']->user->roles[0]=="administrator"){
+			$GLOBALS['LMS_Admin']=new LMS_Admin();
+		}
+	}
+	$GLOBALS['template']=new Templates();
 	$GLOBALS['groups']=new Groups();
 	$GLOBALS['tests']=new Tests();	
 	$GLOBALS['reports']=new Reports();
@@ -46,6 +53,8 @@ function front_style_lms() {
 	wp_enqueue_style('style_lms', ASSETS_DIR.'css/stylesheet.min.css');	
 	wp_enqueue_style('style_jquery-ui', '//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css');	
 	wp_enqueue_style('vjs-css', '//vjs.zencdn.net/4.12/video-js.css'  );
+	wp_enqueue_style('fancybox-css', ASSETS_DIR . 'jquery.fancybox-1.3.4/fancybox/jquery.fancybox-1.3.4.css'  );
+	
 }
 
 /*FRONTEND scripts*/
@@ -57,6 +66,7 @@ function front_js_enqueue(){
 	wp_enqueue_script( 'custom-script-lms', ASSETS_DIR . 'js_min/custom_script.min.js', array('jquery', 'ap_wpeditor_init', 'jquery-cookie', 'jquery-ui'), '1.0', true);	
   	wp_enqueue_script( 'vjs', '//vjs.zencdn.net/4.12/video.js',   array( 'jquery' ), '',  true );
   	wp_enqueue_script( 'jquery-ui', '//code.jquery.com/ui/1.11.4/jquery-ui.js',   array( 'jquery' ), '',  true );
+  	wp_enqueue_script( 'fancybox-jq', ASSETS_DIR . 'jquery.fancybox-1.3.4/fancybox/jquery.fancybox-1.3.4.pack.js', array( 'jquery' ), '1.3.4', true );
 
 }
 

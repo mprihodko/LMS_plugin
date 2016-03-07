@@ -71,7 +71,7 @@
 				
 				<div class="test_content_wrap test-list-col" onclick="javascript:window.location='<?php the_permalink(); ?>?part=<?=$GLOBALS['tests']->get_part(get_the_ID())?>&group=<?=$group?>'">
 					<?php $content = get_the_content('Read More..'); ?>
-					<?php if($content && strlen($content)>250)	print substr(strip_tags($content), 0, 250).'...'; else print $content; ?>			
+					<?php if($content && strlen($content)>250)	print mb_substr(strip_tags($content), 0, 250, "UTF8").'...'; else print $content; ?>			
 				</div>
 				<div class="test_resours_wrap test-list-col">
 					<h3>Test Resourses:</h3>

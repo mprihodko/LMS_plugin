@@ -206,14 +206,15 @@ Class Tests{
 
 	public function get_available_tests(){
 		if(!is_user_logged_in()) return;
-		$user_groups=$GLOBALS['users']->get_user_groups();
+		if(current_user_can('administrator')){
+		$user_groups=$GLOBALS['groups']->get_groups();	
+		}else{
+			$user_groups=$GLOBALS['users']->get_user_groups();
+		}
 		foreach ($user_groups as $key => $value) {
 			$tests[$value->group_id]['group']=$GLOBALS['groups']->get_group('group_id', $value->group_id);
 			$tests[$value->group_id]['tests']=$this->get_group_tests($value->group_id);
-		}
-		// echo "<pre>";
-		// var_dump($tests);
-		// echo "</pre>";
+		}		
 		return $tests;
 	}
 	public function get_group_tests($group_id=null){
@@ -338,6 +339,12 @@ Class Tests{
 			}
 		}
 	}
+	public function has_video($test_id=null){
+		if($test_id==null) return false;	   
+		$is_video = get_post_meta($test_id, "lms_attach_video", true);
+		if($is_video!='') return true;
+		return false;		
+	}
 	public function has_interaction($test_id=null){
 		if($test_id==null) return false;
 		$is_interaction = get_post_meta($test_id, "lms_interactive_status", true);
@@ -357,21 +364,21 @@ Class Tests{
 		if($test_id==null) return false;
 		$part="questions";		
 		if($this->has_interaction($test_id))  return "interaction";
-		if($this->the_video()) return "video";
-		if($this->has_media_after()) return "after";		
+		if($this->has_video($test_id)) return "video";
+		if($this->has_media_after($test_id)) return "after";		
 		if($part=="questions") return $part."&access=".$this->get_token($test_id);	
 	}
 	public function get_part_after_interaction($test_id=null){
 		if($test_id==null) return false;
 		$part="questions";
-		if($this->the_video()) return "video";
-		if($this->has_media_after()) return "after";		
+		if($this->has_video($test_id)) return "video";
+		if($this->has_media_after($test_id)) return "after";		
 		if($part=="questions") return $part."&access=".$this->get_token($test_id);	
 	}
 	public function get_part_after_video($test_id=null){
 		if($test_id==null) return false;
 		$part="questions";
-		if($this->has_media_after()) return "after";		
+		if($this->has_media_after($test_id)) return "after";		
 		if($part=="questions") return $part."&access=".$this->get_token($test_id);	
 	}
 
@@ -385,8 +392,8 @@ Class Tests{
 		$part="questions";
 		if($this->has_media_before($test_id))  return "before";
 		if($this->has_interaction($test_id))  return "interaction";
-		if($this->the_video()) return "video";
-		if($this->has_media_after()) return "after";
+		if($this->has_video($test_id)) return "video";
+		if($this->has_media_after($test_id)) return "after";		
 		if($part=="questions") return $part."&access=".$this->get_token($test_id);	
 		
 	}

@@ -66,18 +66,21 @@ Class Users{
 
 
 	/*get group for current user*/
-	public function get_user_groups(){
+	public function get_user_groups($user=null){
+		if($user==null) $user=$this->user->ID;
 		$groups=$GLOBALS['groups']->get_group("remove", 0);
 		foreach ($groups as $key => $value) {
 
 			$query=$this->db->get_results("	SELECT `group_id` 
 											FROM `".$this->db->prefix."lms_group_users` 
 											WHERE `group_id`=".$value->group_id." 
-											AND `user_id`=".$this->user->ID);
+											AND `user_id`=".$user);
+		
 			if($query) 
-				$groups[]=$query[0];
+				$groups_user[]=$query[0];
 		}
-		if(isset($groups)&& is_array($groups)) return $groups;
+		
+		if(isset($groups_user)&& is_array($groups_user)) return $groups_user;
 	}
 
 	/*get fullname of current user*/

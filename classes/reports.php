@@ -68,6 +68,21 @@ class Reports{
 #####################################################################################################################
 
 
+ 	public function get_one_report($user, $test, $group){
+ 		$query_results=$this->db->get_results("SELECT * 
+ 												FROM `".$this->db->prefix."lms_test_results` 
+ 												WHERE `group_id`=".$group."
+ 												AND `test_id`=".$test."
+ 												AND `user_id`=".$user);
+ 		if(!$query_results){
+ 			return false;
+ 		}else{
+ 			return $query_results;
+ 		}
+
+ 	}
+
+
  	public function get_all_reports(){ 
  		$query_results=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_test_results`");
  		foreach ($query_results as $key => $value) {

@@ -27,7 +27,12 @@ class Templates {
 		if(!is_user_logged_in() && !is_page('login') && !is_front_page()){
 			wp_redirect(home_url('login'));
 		}
-		if((is_archive("lms_test") && $this->userrole=='administrator') || (is_archive("lms_test") && isset($_GET['group_name']))){
+		if((is_archive("lms_test") && $this->userrole=='administrator' && !isset($_GET["part"])) || (is_archive("lms_test") && !isset($_GET['group_name']) 
+			&& !isset($_GET["part"]))){
+			$template=TPL_DIR."user_archive.php";
+		}
+		if((is_archive("lms_test") && $this->userrole=='administrator' && isset($_GET["part"])) || (is_archive("lms_test") && isset($_GET['group_name']) 
+			|| isset($_GET["part"]))){
 			$template=TPL_DIR."test_archive.php";
 		}
 		if((is_archive("lms_test") && !isset($_GET['group_name']) && $this->userrole!='administrator' )){
