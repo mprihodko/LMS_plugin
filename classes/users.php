@@ -132,7 +132,7 @@ Class Users{
 	public function have_attempts($test_id=null, $group_id=null){
 		if($test_id==null || $group_id==null) return false;
 		$test_attempts = $GLOBALS['reports']->get_attempts_limit($test_id, $group_id);
-		$user_attempts = $GLOBALS['reports']->get_used_attempts($test_id, $group_id);	
+		$user_attempts = $GLOBALS['reports']->get_used_attempts($test_id, $group_id, $this->user->ID);	
 		if($test_attempts<=$user_attempts) return false;
 		return true;
 	}

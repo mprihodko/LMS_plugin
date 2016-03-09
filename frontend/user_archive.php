@@ -27,20 +27,20 @@
 								</a>
 							</h4>
 
-							<?php if($GLOBALS['reports']->has_result($test->ID, $group) && $GLOBALS['reports']->the_test_score($test->ID, $group)!=0) { ?>
+							<?php if($GLOBALS['reports']->has_result($test->ID, $group) && $GLOBALS['reports']->the_test_score($test->ID, $group, $user->ID)!=0) { ?>
 
-								<h4>Your score: <?php echo $GLOBALS['reports']->the_test_score($test->ID, $group); ?>/<?=$pass?> </h4>	
+								<h4>Your score: <?php echo $GLOBALS['reports']->the_test_score($test->ID, $group, $user->ID); ?>/<?=$pass?> </h4>	
 
 							<?php }else{ ?>
 
 								<h4  >Pass Score: <?=$pass?></h4>
 
-							<?php } ?>
-							<?php if($GLOBALS['reports']->has_passed($test->ID, $group)) { ?>
+							<?php } ?>						
+							<?php if($GLOBALS['reports']->has_passed($test->ID, $group, $user->ID)) { ?>
 
 								<h4><a href="<?php echo get_the_permalink($test->ID); ?>/?part=certificate">View Certificate</a></h4>
 
-							<?php }elseif($GLOBALS['reports']->has_result($test->ID, $group) && $GLOBALS['reports']->the_test_score($test->ID, $group)!=0){ ?>
+							<?php }elseif($GLOBALS['reports']->has_result($test->ID, $group) && $GLOBALS['reports']->the_test_score($test->ID, $group, $user->ID)!=0){ ?>
 
 								<h4 class="retakeTest" >
 									<a href='<?php echo get_the_permalink($test->ID); ?>/?part=<?=$GLOBALS['tests']->get_part_questions($test->ID)?>&group=<?=$group?>'>Retake Test</a>
@@ -81,27 +81,31 @@
 								<?php $content = $test->post_content; ?>
 								<?php if($content && strlen($content)>250)	print  mb_substr(strip_tags($content), 0, 250, "UTF8").'...'; else print $content; ?>			
 							</div>
-							<div class="test_resours_wrap test-list-col">
+							<!-- Resourses -->
+							<!-- <div class="test_resours_wrap test-list-col">
 								<h3>Test Resourses:</h3>
-								<ul>					
-								<?php $lms_resources = get_post_meta($test->ID, 'lms_attach_media', true);
-								if(is_array($lms_resources)) {						
-									foreach($lms_resources as $res) {
-										if(!current_user_can('edit_page')){
-											if($res['pos'] == 'before' && $res['perms'] == 'everyone' ) {
-												$start=strripos($res['file'], '/');
-												$name=substr($res['file'],$start+1);							
-												echo "<li><a href='{$res['url']}'>{$name}</a></li>";				
-											}
-										}else{
-											$start=strripos($res['file'], '/');
-											$name=substr($res['file'],$start+1);							
-											echo "<li><a href='{$res['url']}'>{$name}</a></li>";	
-										}
-									}
-								}?>
-								</ul>
-							</div>
+								<ul>		 -->			
+								<?php 
+								// $lms_resources = get_post_meta($test->ID, 'lms_attach_media', true);
+								// if(is_array($lms_resources)) {						
+								// 	foreach($lms_resources as $res) {
+								// 		if(!current_user_can('edit_page')){
+								// 			if($res['pos'] == 'before' && $res['perms'] == 'everyone' ) {
+								// 				$start=strripos($res['file'], '/');
+								// 				$name=substr($res['file'],$start+1);							
+								// 				echo "<li><a href='{$res['url']}'>{$name}</a></li>";				
+								// 			}
+								// 		}else{
+								// 			$start=strripos($res['file'], '/');
+								// 			$name=substr($res['file'],$start+1);							
+								// 			echo "<li><a href='{$res['url']}'>{$name}</a></li>";	
+								// 		}
+								// 	}
+								// }
+								?>
+							<!-- 	</ul>
+							</div> -->
+							<!-- Resourses -->
 						</div>
 						<!-- content -->
 

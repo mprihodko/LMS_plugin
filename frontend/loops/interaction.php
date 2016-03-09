@@ -161,9 +161,9 @@
 	        	<h1 class="passed_message">You have already passed this test!</h1>
 	        	<h4 class="passed_message">
 	        		<span>Please proceed to the </span>
-	        			<a href="#step_<?=$next?>" data-step="<?=$next?>" class="processed_next">Next Step</a>
+	        			<a href="#step_<?=$next?>" data-step="<?=$next?>" class="processed_next">NEXT STEP</a>
 	        		 	<span>or</span> 
-	        		 	<a href="#" data-step="<?=$m?>" class="show-form">Retake This Step</a>
+	        		 	<a href="#" data-step="<?=$m?>" class="show-form">RETAKE THIS STEP</a>
 	        	</h4>	        
 	        	<form id="step_check_<?=$m?>" style="display:none;">
 	        	<?php $next=$m + 1; ?>
@@ -234,9 +234,9 @@
 		      	<div class="test_passed test_passed_<?=$m?>">
 		      		<h1>Congratulations, you passed!</h1>
 		      		<h4><span>Please proceed to the</span>
-		      			<a class="processed_next" data-step="<?=$next?>" href="#step_<?=$next?>">Next Step</a>
+		      			<a class="processed_next" data-step="<?=$next?>" href="#step_<?=$next?>">NEXT STEP</a>
 		      				<span>or</span>
-		      			<a href="#" data-step="<?=$m?>" class="show-form">Retake This Step</a>
+		      			<a href="#" data-step="<?=$m?>" class="show-form">RETAKE THIS STEP</a>
 		      		</h4>
 		      	</div>
 		      	<div class="test_fail">

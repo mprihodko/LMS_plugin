@@ -246,9 +246,10 @@ class Reports{
 
 
 	/*user-attempts*/
-	public function get_used_attempts($test_id=null, $group_id=null){
+	public function get_used_attempts($test_id=null, $group_id=null, $user=null){
 		if($test_id==null || $group_id==null) return 0;		
-		return $this->the_test_result_info($test_id, $group_id)['attempts'];
+		if($user==null) $user=$this->user;
+		return $this->the_test_result_info($test_id, $group_id, $user)['attempts'];
 	}
 
 
@@ -262,9 +263,10 @@ class Reports{
 
 
 	/*the_test_result_info per user*/
-	public function the_test_result_info($test_id=null, $group_id=null){
-		if($test_id==null || $group_id=null) return false;
-		$summary = $this->db->get_row('SELECT SUM(`pass`) AS `passes`, COUNT(*) AS `attempts`, MAX(`score`) AS `score` FROM '.$this->db->prefix.'lms_test_results WHERE user_id = '.$this->user.' AND test_id = '.$test_id.' AND group_id='.$group_id);		
+	public function the_test_result_info($test_id=null, $group_id=null, $user=null){
+		if($test_id==null || $group_id==null) return false;
+		if($user==null) $user=$this->user;	
+		$summary = $this->db->get_row('SELECT SUM(`pass`) AS `passes`, COUNT(*) AS `attempts`, MAX(`score`) AS `score` FROM '.$this->db->prefix.'lms_test_results WHERE user_id = '.$user.' AND test_id = '.$test_id.' AND group_id='.$group_id);		
 		if(!$summary || count($summary)<1) return false;		
 		$this->data['passes'] = $summary->passes;
 		$this->data['attempts'] = $summary->attempts;
@@ -275,7 +277,7 @@ class Reports{
 
 	/*check result per user*/
 	public function has_result($test_id=null, $group_id=null){
-		if($test_id==null || $group_id=null) return false;
+		if($test_id==null || $group_id==null) return false;
 		$query=$this->db->get_results('SELECT * FROM '.$this->db->prefix.'lms_test_results WHERE user_id = '.$this->user.' AND test_id = '.$test_id.' AND group_id='.$group_id);
 		if(!$query || count($query)<1) return false;			
 		return true;
@@ -283,9 +285,10 @@ class Reports{
 
 
 	/*return score if RESULTS EXISTS*/
-	public function the_test_score($test_id=null, $group_id=null){
-		if($test_id==null || $group_id=null) return false;
-		$score=$this->the_test_result_info($test_id, $group_id);
+	public function the_test_score($test_id=null, $group_id=null, $user=null){
+		if($test_id==null || $group_id==null) return false;
+		if($user==null) $user=$this->user;
+		$score=$this->the_test_result_info($test_id, $group_id, $user);
 		if($score==null) return false;
 		if(array_key_exists('score', $score)) return $score['score'];
 		return false;
@@ -293,12 +296,13 @@ class Reports{
 
 
 	/*check pass test per user*/
-	public function has_passed($test_id=null, $group_id=null){
-		if($test_id==null || $group_id=null) return false;
-		$passes=$this->the_test_result_info($test_id, $group_id);
+	public function has_passed($test_id=null, $group_id=null, $user){		
+		if($test_id==null || $group_id==null) return false;
+		if($user==null) $user=$this->user;
+		$passes=$this->the_test_result_info($test_id, $group_id, $user);		
 		if($passes==null) return false;
 		if(array_key_exists('passes', $passes))	return $passes['passes'];		
-		return false;
+		return $passes;
 	}
 
 	

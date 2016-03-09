@@ -25,9 +25,14 @@
 
 				<?php }else{ ?>
 
-					<h4  >Pass Score: <?=$pass?></h4>
+					<h4  >Score Needed: <?=$pass?></h4>
 
 				<?php } ?>
+
+<?php if(!$price || $price<0){ $prices="Free"; }else{ $prices="$".$price; } ?>	
+
+				<h4>Price: <?=$prices?></h4>
+
 				<?php if($GLOBALS['reports']->has_passed(get_the_ID(), $group)) { ?>
 
 					<h4><a href="<?php the_permalink(); ?>/?part=certificate">View Certificate</a></h4>
@@ -44,13 +49,11 @@
 				<?php }else{ ?>
 
 					<h4>
-						<a href='<?php the_permalink(); ?>?part=<?=$GLOBALS['tests']->get_part(get_the_ID())?>&group=<?=$group?>'>Start Test</a>
+						<a id="starttest" href='<?php the_permalink(); ?>?part=<?=$GLOBALS['tests']->get_part(get_the_ID())?>&group=<?=$group?>'>Start Test</a>
 					</h4>
 
 				<?php } ?>
-				<?php if(!$price || $price<0){ $prices="Free"; }else{ $prices="$".$price; } ?>	
-
-				<h4>Price: <?=$prices?></h4>
+				
 			</div>
 			<!-- test links && info -->
 
@@ -73,8 +76,8 @@
 					<?php $content = get_the_content('Read More..'); ?>
 					<?php if($content && strlen($content)>250)	print mb_substr(strip_tags($content), 0, 250, "UTF8").'...'; else print $content; ?>			
 				</div>
-				<div class="test_resours_wrap test-list-col">
-					<h3>Test Resourses:</h3>
+				<div class="test_resours_wrap test-list-col" style="display:none;">
+					<h3>Test Resources:</h3>
 					<ul>					
 					<?php $lms_resources = get_post_meta(get_the_ID(), 'lms_attach_media', true);
 					if(is_array($lms_resources)) {						
