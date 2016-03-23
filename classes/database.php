@@ -152,6 +152,17 @@ class LMS_db {
 						);
 			$post_id = wp_insert_post( $defaults );
 		}
+		if($this->get_page_by_name('registration')==false){
+			$defaults = array(
+							'post_status'   => 'publish',
+							'post_title'    => 'Registration',
+							'post_content'  => '[lms_registration_form]',
+							'post_name'     => 'registration',
+							'post_type'     => 'page',
+							'post_author'   => 1,
+						);
+			$post_id = wp_insert_post( $defaults );
+		}
 	}
 
 	public function get_page_by_name($pagename){		

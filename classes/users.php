@@ -8,16 +8,29 @@ Class Users{
 	public $user;	
 	public $user_groups;
 	public $user_tests;
+	private $error;
 	private $db;
 	private $date;
 
+	private $username;
+    private $email;
+    private $password; 
+    private $password_confirm;   
+    private $first_name;
+    private $last_name;
+    private $nickname;
+    private $captcha_resp;
+    private $captcha;
+    private $group_selected;
 	/*construct*/
 
 	public function __construct() {
-		global $wpdb;
+		global $wpdb;		 
 		$this->db=$wpdb;
 		$this->data=array();
 		$this->user=$this->get_user_data();	
+		add_shortcode('lms_registration_form', array($this, 'shortcode'));
+    	// add_action('wp_enqueue_scripts', array($this, 'flat_ui_kit'));
 	}
 
 
@@ -33,6 +46,13 @@ Class Users{
 		return  wp_get_current_user();
 	}
 	
+	public function is_user_exists($id=null){
+		if($id==null) return false;
+		$aux = get_userdata( $id );
+		if($aux==false)
+			return false;	 
+		return true;
+	}
 
 #####################################################################################################################
 #																													#
@@ -62,8 +82,6 @@ Class Users{
  			return $this->data;
 
 	}
-	
-
 
 	/*get group for current user*/
 	public function get_user_groups($user=null){
@@ -89,25 +107,6 @@ Class Users{
 		$this->data['last_name']=get_user_meta($id, 'last_name', true);
 		return $this->data;
 	}
-
-	// public function get_group_users($group_id){
-	// 	if(is_array($group_id)){
-	// 		$query_param=implode(" OR `group_id`=", $group_id);
-	// 	}else{
-	// 		$query_param=$group_id;
-	// 	}
-	// 	$query=$this->db->get_results("SELECT `user_id` FROM `".$this->db->prefix."lms_group_users` WHERE  `group_id`=".$query_param);
-	// 	if(!$query) return;
-
-	// 	foreach ($query as $key => $value) {
-	// 		$get_users[$key]=get_user_by('id', $value->user_id);
-	// 	}
-	// 	foreach ($get_users as $key => $value) {
-	// 		$this->data[$key]=$value->data;
-	// 	}
-	// 	return $this->data;
-	// }
-
 
 
 #####################################################################################################################
@@ -149,11 +148,148 @@ Class Users{
 
 #####################################################################################################################
 #																													#
-# ADD USER ROLES																									#
+# ADD USER 																											#
 #																													#
 #####################################################################################################################
 
 
+	public function registration_form(){ 
+		require_once(TPL_DIR."register_new_user.php");
+    }
 
+   	public function validation(){
+   		$this->error=array();
+ 		if (!empty($this->captcha) && isset($_SESSION['current_captcha'])){
+ 			if($this->captcha!=$_SESSION['current_captcha']){
+ 				$this->error['captcha']='error';
+ 				// return new WP_Error('field', 'The Captcha don\'t valid');
+ 			}
+ 		}else{
+ 			$this->error['captcha']='error';
+ 			// return new WP_Error('field', 'The Captcha don\'t valid');
+ 		}
+        if (empty($this->username) || empty($this->password) || empty($this->email) || empty($this->group_selected)) {
+        	if(empty($this->username)) $this->error['reg_name']='error';
+        	if(empty($this->password)) $this->error['reg_password']='error';
+        	if(empty($this->email)) $this->error['reg_email']='error';
+        	if(empty($this->group_selected)) $this->error['group_selected']='error';	
+            // return new WP_Error('field', 'Required form field is missing');
+        }
+ 
+        if (strlen($this->username) < 4) {
+        	$this->error['reg_name']='error';
+            // return new WP_Error('username_length', 'Username too short. At least 4 characters is required');
+        }
+ 
+        if (strlen($this->password) < 5){ 
+        	$this->error['reg_password']='error';
+            // return new WP_Error('password', 'Password length must be greater than 5');
+        }
+ 		if($this->password != $this->password_confirm) {
+ 			$this->error['reg_password']='error';
+ 			$this->error['confirm_reg_password']='error';
+ 			// return new WP_Error('password', 'Passwords don\'t match');
+ 		}
+        if (!is_email($this->email)) {
+        	$this->error['reg_email']='error';
+            // return new WP_Error('email_invalid', 'Email is not valid');
+        }
+ 
+        if (email_exists($this->email)) {
+        	$this->error['reg_email']='error';
+            // return new WP_Error('email', 'Email Already in use');
+        }
+ 		
+ 		if(!empty($this->group_selected)){
+ 			if(!$GLOBALS['groups']->is_group_exists($this->group_selected))
+ 				$this->error['group_selected']='error';	
+ 				// return new WP_Error('field', 'Please Check Your Group ID');
+ 		}
 
+        $details = array('reg_name' => $this->username,
+            'reg_fname' => $this->first_name,
+            'reg_lname' => $this->last_name,
+                       
+        );
+ 
+        foreach ($details as $field => $detail) {
+            if (!validate_username($detail)) {   
+            	$this->error[$field]='error';         	
+                // return new WP_Error('name_invalid', 'Sorry, the "' . $field . '" you entered is not valid');
+            }
+        }
+ 		return $this->error;
+    }
+
+   	public function registration(){
+ 
+	    $userdata = array(
+	        'user_login' => esc_attr($this->username),
+	        'user_email' => esc_attr($this->email),
+	        'user_pass' => esc_attr($this->password),        
+	        'first_name' => esc_attr($this->first_name),
+	        'last_name' => esc_attr($this->last_name),
+	        'nickname' => esc_attr($this->nickname),       
+	        'role' => "customer"
+	    );
+ 
+	    if (is_wp_error($this->validation())) {
+	        echo '<div style="margin-bottom: 6px" class="btn btn-block btn-lg btn-danger">';
+	        echo '<strong>' . $this->validation()->get_error_message() . '</strong>';
+	        echo '</div>';
+	    } else {
+	        $register_user = wp_insert_user($userdata);
+	        if (!is_wp_error($register_user)) {
+	 
+	            echo '<div style="margin-bottom: 6px" class="btn btn-block btn-lg btn-danger">';
+	            echo '<strong>Registration complete. Goto <a href="' . home_url('login') . '">login page</a></strong>';
+	            echo '</div>';
+	            $GLOBALS['groups']->add_user_in_group($GLOBALS['groups']->is_group_exists($this->group_selected), $register_user);
+	        } else {
+	            echo '<div style="margin-bottom: 6px" class="btn btn-block btn-lg btn-danger">';
+	            echo '<strong>' . $register_user->get_error_message() . '</strong>';
+	            echo '</div>';
+	        }
+	    }
+	 
+	}
+ 
+ 	public function shortcode(){
+ 
+        ob_start();
+ 
+        if (isset($_POST['reg_submit'])) {
+        	$this->captcha=((isset($_POST['captcha']))? $_POST['captcha'] : '');        	
+            $this->username = ((isset($_POST['reg_name']))? $_POST['reg_name'] : '');
+            $this->email = ((isset($_POST['reg_email']))? $_POST['reg_email'] : '');
+            $this->password = ((isset($_POST['reg_password']))? $_POST['reg_password'] : '');
+           	$this->password_confirm = ((isset($_POST['confirm_reg_password']))? $_POST['confirm_reg_password'] : '');
+            $this->first_name = ((isset($_POST['reg_fname']))? $_POST['reg_fname'] : '');
+            $this->last_name = ((isset($_POST['reg_lname']))? $_POST['reg_lname'] : '');
+            $this->nickname = ((isset($_POST['reg_fname']))? $_POST['reg_fname'] : '');           
+            $this->group_selected=((isset($_POST['group_selected']))? $_POST['group_selected'] : ''); 
+            if(count($this->validation())==0){
+            	$this->registration();
+            }
+            else
+            	echo '<strong>Sorry, you entered is not valid information!</strong>';
+            	// return new WP_Error('field', 'Sorry, you entered is not valid information');
+        }
+ 
+        $this->registration_form();
+        return ob_get_clean();
+    }
+
+    public function the_captcha(){
+		$first_num=rand(1, 15);	
+		$second_num=rand(1, 15);
+		?>
+		<style>#captcha{width: 100px; display: inline-block;} .captcha_label{padding: 5px 0; position: relative; display: inline-block; top: 3px;}</style>
+		<label class="login-field-icon fui-new captcha_label" for="captcha">
+			<?php echo $first_num.' + '.$second_num.' ='; ?>
+		</label>
+        <input name="captcha" size="4" type="text" class="form-control login-field <?=isset($this->error['captcha']) ? 'error' : ''?>" id="captcha" />       
+		<?php
+		$_SESSION['current_captcha']=$first_num + $second_num;
+	}
 }

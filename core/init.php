@@ -25,7 +25,7 @@ function init_classes(){
 	$GLOBALS['tests']=new Tests();	
 	$GLOBALS['reports']=new Reports();
 	$GLOBALS['template']=new Templates();
-	add_shortcode('lms_login_form', "lms_login_form");	
+	add_shortcode('lms_login_form', "lms_login_form");	 
 	return $GLOBALS;
 }
 
@@ -73,11 +73,18 @@ function front_js_enqueue(){
 		
 /*Add shortcode login form*/
 function lms_login_form(){
-	if(!is_user_logged_in()){
-		wp_login_form();
-	}else{
-		wp_loginout(home_url());
-	}
+	if(!is_user_logged_in()){ ?>
+		<div class="lms-login-form">
+			<h3 class="register_head">Login</h3>
+			<?php wp_login_form();?>
+			<span>You do not have an account?</span> <a href="/registration/">Register Now!</a>
+		</div>			
+	<?php }else{ ?>
+		<div class="lms-login-form">
+			<h3 class="register_head">LogOut</h3>
+			<?php  wp_loginout(home_url()); ?>
+		</div>
+	<?php }
 }
 
 
@@ -140,6 +147,8 @@ function cron_add_min( $schedules ) {
 	);
 	return $schedules;
 }
+
+
 
 /*AJAX CLASSES*/
 require_once(IAMD_TD.'/classes/AJAX_Handler.php');

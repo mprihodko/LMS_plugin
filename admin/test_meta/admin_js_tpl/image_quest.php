@@ -8,7 +8,7 @@
 			<h5>Answers</h5>
 			<ul class="step-{step}-quest-{q_num}-answers">
 				<li>
-					<input type="checkbox" class="select_true"  value="">
+					<input type="radio" name="int_true_select[{step}][{q_num}][]" class="select_true"  value="" required>
 					<input type="hidden" class="answer_hidden" name="int_true[{step}][{q_num}][]" value="" required>
 					<input type="file" name="img_answer[{step}][{q_num}][]" required>
 					<a data-answer="{a_num}" data-questnum="{q_num}" data-step="{step}" class="addAnswerImg"><i class="fa fa-plus-circle"></i></a>
@@ -22,7 +22,7 @@
 </script>
 <script type="text/template" id="image_quest_answer">
 	<li>
-		<input type="checkbox" class="select_true" value="">
+		<input type="radio" name="int_true_select[{step}][{q_num}][]" class="select_true" value="" required >
 		<input type="hidden" class="answer_hidden" name="int_true[{step}][{q_num}][]" value="" required>
 		<input type="file" name="img_answer[{step}][{q_num}][]" required>
 		<a data-answer="{a_num}" data-questnum="{q_num}" data-step="{step}" class="delAnswer"><i class="fa fa-minus-circle"></i></a>

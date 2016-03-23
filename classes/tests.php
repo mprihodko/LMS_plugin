@@ -867,30 +867,49 @@ Class Tests{
 						}
 
 						/*get quest answers image*/
-						if(isset($_FILES['img_answer']['name'][$step_num][$quest_num])){
+						
+						if(isset($_POST['image_a_url'][$step_num][$quest_num])){
+							
+							$number_answer_img[$step_num][$quest_num]=0;
+							foreach ($_POST['image_a_url'][$step_num][$quest_num] as $answer_num => $answer) {
+								$number_answer_img[$step_num][$quest_num]++;
+								if(!empty($answer))
+									$steps[$step_num]['questions'][$number_quest]['answers'][$number_answer_img[$step_num][$quest_num]]=$answer;								
+								if(isset($_POST['int_true'][$step_num][$quest_num][$answer_num]) && $_POST['int_true'][$step_num][$quest_num][$answer_num]=="true"){
+									$steps[$step_num]['questions'][$number_quest]['true']=$answer;
+								}
+							}
 
-							$number_answer=0;
+						}
+						
+						if(isset($_FILES['img_answer']['name'][$step_num][$quest_num])){
+							if(!isset($number_answer_img[$step_num][$quest_num])) $number_answer_img[$step_num][$quest_num]=0;
+							
 							foreach ($_FILES['img_answer']['name'][$step_num][$quest_num] as $answer_num => $answer) {
-								$number_answer++;
+								$number_answer_img[$step_num][$quest_num]++;
 								if($_FILES['img_answer']['error'][$step_num][$quest_num][$answer_num]==0){
 									$image_data=wp_upload_bits($_FILES['img_answer']['name'][$step_num][$quest_num][$answer_num],
 																				    								null,
 																				    								file_get_contents($_FILES['img_answer']['tmp_name'][$step_num][$quest_num][$answer_num]));
 
-									$steps[$step_num]['questions'][$number_quest]['answers'][$number_answer]=$image_data['url'];
-								}		    				
-								if(isset($_POST['int_true'][$step_num][$quest_num][$answer_num]) && $_POST['int_true'][$step_num][$quest_num][$answer_num]=="true"){
-									$steps[$step_num]['questions'][$number_quest]['true']=$answer;
+									$steps[$step_num]['questions'][$number_quest]['answers'][$number_answer_img[$step_num][$quest_num]]=$image_data['url'];
+								}
+								if(!isset($steps[$step_num]['questions'][$number_quest]['true'])){		    				
+									if(isset($_POST['int_true'][$step_num][$quest_num][$answer_num]) && $_POST['int_true'][$step_num][$quest_num][$answer_num]=="true"){
+										$steps[$step_num]['questions'][$number_quest]['true']=$image_data['url'];
+									}
 								}
 							}
 						}
+
 						if(isset($_POST['quest_desc'][$step_num][$quest_num]) && $_POST['quest_desc'][$step_num][$quest_num]!=''){
 							$steps[$step_num]['questions'][$number_quest]['quest_description']=strip_tags(trim($_POST['quest_desc'][$step_num][$quest_num]));
 						}
 					}
 				}
 
-	   		}	   		
+	   		}
+	   					
 			if(isset($steps) && is_array($steps)){				
 				update_post_meta($post_id, "lms_interaction_data", serialize($steps));
 			}	

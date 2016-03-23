@@ -187,17 +187,17 @@ class lms_steps_result extends AJAX_Handler{
 			}
 			$id=trim(strip_tags($_POST['test_id']));
 			$steps=unserialize(get_post_meta($id, 'lms_interaction_data', true));
-			$success='';
-			foreach ($steps[$_POST['step']]['questions'] as $key => $value) {
+			$success=0;
+			foreach ($steps[$_POST['step']]['questions'] as $key => $value) {				 
 				if($results[$key]==$value['true']){
-					$success[$key]=$value['true'];
+					$success++;
 				}else{
 					$error[$key]=$results[$key];
 					$review[$key]=$steps[$_POST['step']]['video'][1]['url'];
 				}		
-			}
+			}			 
 			$current_step=trim(strip_tags($_POST['step']));
-			if(count($success)==count($results)){
+			if($success==count($results)){
 				$json['error']=0;
 				$json['count']=0;
 				$user=get_current_user_id();

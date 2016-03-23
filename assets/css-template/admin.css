@@ -504,6 +504,10 @@
   opacity: 0.7;
   cursor: pointer;
 }
+#wp_course_builder .course_steps .step .interaction-box .questContent .quest_content a.actionImage {
+  position: relative;
+  bottom: 45px;
+}
 #wp_course_builder .course_steps .step .interaction-box .questContent .quest_content a.addAnswerImg,
 #wp_course_builder .course_steps .step .interaction-box .questContent .quest_content a.addAnswer {
   display: inline;

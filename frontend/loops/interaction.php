@@ -1,5 +1,5 @@
 <?php 	$course_data=unserialize(get_post_meta(get_the_ID(), 'lms_interaction_data', true)); ?>
-
+		
 	  	<!--MENU TABS START-->	  		  		
 	  	<div id="progress_panel" class="">
 	  		<h2 id="progress_title">Progress Bar</h2>
@@ -45,7 +45,7 @@
 	              	</li>
 	           		<?php } ?>
 	            	<li <?php echo (($steps_done>=$m)? 'class="done interaction_link"' : 'class="not-active interaction_link"')?> >
-		          		<a href="#interaction_<?=$m?>" <?php echo (($steps_done>=$m)? 'class="interaction_link check"' : 'class="not-active interaction_link no-check"')?>>
+		          		<a href="interaction_<?=$m?>" <?php echo (($steps_done>=$m)? 'class="interaction_link check"' : 'class="not-active interaction_link no-check"')?>>
 		            		<span>Interaction</span>
 		          		</a>
 		        	</li>
@@ -154,7 +154,7 @@
 	    </div> 
 	    <!-- LESSON BLOCK END -->
 	    <!-- INTEACTION BLOCK START -->
-	    <div id="interaction_<?=$m?>" class="testing_tab tab_check">
+	    <div id="interaction_<?=$m?>" class="testing_tab tab_check interaction_<?=$m?>">
 	      	<h2 style="width:100%;"><?=$value['title']?></h2>
 	      	<?php if($steps_done>=$m){ ?>
 	      		<?php $next=$m + 1; ?>
@@ -181,7 +181,7 @@
 	            			<?php }else{ ?>
 	            				<li class="image_answer_front">
 									<div class="img-answer-cover">
-										<div class="img-answer-front" style="background: url('<?=$answer["url"]?>');  background-repeat: no-repeat; background-size: contain; background-position: center;"></div>
+										<div class="img-answer-front" style="background: url('<?=$answer?>');  background-repeat: no-repeat; background-size: contain; background-position: center;"></div>
 									</div>			   												
 									<div class="radio_answer">
 										<input type="radio" name="answer-<?=$task_num?>" class="answer-check" id="answer-<?=$ans_num?>" value="<?=substr($answer, strripos($answer, '/')+1)?>">
@@ -215,7 +215,7 @@
 	            					<?php }else{ ?>
 	            						<li class="image_answer_front">
 											<div class="img-answer-cover">
-												<div class="img-answer-front" style="background: url('<?=$answer["url"]?>');  background-repeat: no-repeat; background-size: contain; background-position: center;"></div>
+												<div class="img-answer-front" style="background: url('<?=$answer?>');  background-repeat: no-repeat; background-size: contain; background-position: center;"></div>
 											</div>			   												
 											<div class="radio_answer">
 												<input type="radio" name="answer-<?=$task_num?>" class="answer-check" id="answer-<?=$ans_num?>" value="<?=substr($answer, strripos($answer, '/')+1)?>">

@@ -24,7 +24,7 @@ class Templates {
 
 
 	public function page_templates($template){
-		if(!is_user_logged_in() && !is_page('login') && !is_front_page()){
+		if(!is_user_logged_in() && !is_page('login') && !is_page('registration') && !is_front_page()){
 			wp_redirect(home_url('login'));
 		}
 		if((is_archive("lms_test") && $this->userrole=='administrator' && !isset($_GET["part"])) || (is_archive("lms_test") && !isset($_GET['group_name']) 

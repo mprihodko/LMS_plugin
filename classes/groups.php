@@ -10,6 +10,8 @@ Class Groups {
 	public $user;
 	public $pagination;
 	public $group_data;	
+	public $insert_id;
+	private $error;
 	private $db;
 	private $group_per_page;
 
@@ -21,10 +23,16 @@ Class Groups {
 		$this->data=array();
 		$this->user=$GLOBALS['users']->user->ID;		
 		if(isset($_POST['lms_gropup_name'])){			 
-			$insert_id=$this->save_groups();
-			$this->save_group_test($insert_id);
-			$this->save_group_users($insert_id);
-			$this->save_group_courses($insert_id);			 
+			$this->insert_id=$this->save_groups();
+			if($this->insert_id>0){
+				$this->save_group_test($this->insert_id);
+				$this->save_group_users($this->insert_id);
+				$this->save_group_courses($this->insert_id);
+			}else{
+				$this->error='<h3 style="color: red; ">ERROR: Group with this ID already exists</h3>';
+			}			 
+		}else{
+			$this->insert_id=0;
 		}
 		$this->group_id=((isset($_GET['group']))?$_GET['group']:0);	
 		$this->group_data=$this->get_group();	
@@ -92,6 +100,13 @@ Class Groups {
 		return $query;
 	}
 
+	public function is_group_exists($text_id){
+		if($text_id==null) return false;
+		$query=$this->get_group("text_id", $text_id);
+		if(!$query) return false;
+		return $query[0]->group_id;
+	}
+
 	/*GET GROUPS FRONTEND*/	
 	public function lms_groups_list_frontend(){
 		/* define current page */
@@ -131,8 +146,7 @@ Class Groups {
 		$query_param="`".$field."`=".$val;		
 		$query=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_groups` WHERE ".$query_param);
 		return $query;
-	}
-
+	}	
 
 	/*Get Group Tests*/
 	public function get_group_test($group_id=null, $offset=0, $limit=10){ 
@@ -173,10 +187,14 @@ Class Groups {
 		if($limit>0)
 			$query_param.=" LIMIT ".$offset.", ".$limit." ";		
 		$query=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_group_users` WHERE `group_id`=".$query_param);
-		if(is_object($query)|| is_array($query)){	
-			foreach ($query as $key => $value) {
-				$users[$key]=get_user_by('id', $value->user_id);
-				$users[$key]->user_level=$value->user_level;
+		if(is_object($query) || is_array($query)){	
+			foreach ($query as $key => $value) {				
+				if($GLOBALS['users']->is_user_exists($value->user_id)){
+					$users[$key]=get_user_by('id', $value->user_id);
+					$users[$key]->user_level=$value->user_level;
+				}else{
+					$this->db->delete($this->db->prefix."lms_group_users", array('user_id'=>$value->user_id));
+				}
 			}
 		}
 		if(isset($users)) return $users;
@@ -245,6 +263,26 @@ Class Groups {
 		$group=(object)$new_group;
 		if(array_key_exists(0, $this->group_data))
 			$group=$this->group_data[0];
+		// if(isset($_POST['lms_gropup_name']) && $this->insert_id>0){
+		// 	$group=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_groups` WHERE `group_id`=".$this->insert_id);
+		// 	var_dump($group);
+		// 	var_dump($this->insert_id);
+		// 	die;
+		// }
+		if(isset($_POST['lms_gropup_name'])){			
+			$new_group['group_id']=$this->insert_id;
+			$new_group['name']=((isset($_POST['lms_gropup_name']))?strip_tags(trim($_POST['lms_gropup_name'])) : '');
+			$new_group['view_limit']=((isset($_POST['view_limit_group']))?strip_tags(trim($_POST['view_limit_group'])) : '');
+			$new_group['text_id']=((isset($_POST['text_id']))?strip_tags(trim($_POST['text_id'])) : '');
+			$new_group['description']=((isset($_POST['description']))?strip_tags(trim($_POST['description'])) : '');
+			$new_group['user_id']=$this->user;
+			$new_group['notice']=((isset($_POST['notice']))?strip_tags(trim($_POST['notice'])) : '');
+			$new_group['group_test_view']=((isset($_POST['group_test_view']))?strip_tags(trim($_POST['group_test_view'])) : '');
+			$new_group['video_review']=((isset($_POST['video_review']))?strip_tags(trim($_POST['video_review'])) : '');
+			$new_group['video_demand']=((isset($_POST['video_demand']))?strip_tags(trim($_POST['video_demand'])) : '');
+			$new_group['remove']='0';
+			$group=(object)$new_group;
+		}
 		$tests=$this->get_group_test();
 		$users=$this->get_group_users();
 		$courses=$this->get_group_courses();		
@@ -304,17 +342,22 @@ Class Groups {
 		$this->data['video_demand']=((isset($_POST['video_demand']))?strip_tags(trim($_POST['video_demand'])) : '');
 		$this->data['remove']='0';
 		if($this->data['group_id'] > 0):
+			unset($this->data['text_id']);
 			$query=$this->db->update($this->db->prefix."lms_groups", $this->data, array("group_id"=>$this->data['group_id']), $format = null, $where_format = null);
 			return $this->data['group_id'];
 		else:
 			unset($this->data['group_id']);
-			$query=$this->db->insert($this->db->prefix."lms_groups", $this->data);
-			$query=$this->db->insert($this->db->prefix."lms_group_users", array("group_id"=>$this->db->insert_id,
-																				"user_id"=>$this->user,
-																				"user_level"=>2
-																				)
-																			);
-			return $this->db->insert_id;
+			if(!$this->is_group_exists($this->data['text_id'])){
+				$query=$this->db->insert($this->db->prefix."lms_groups", $this->data);
+				$query=$this->db->insert($this->db->prefix."lms_group_users", array("group_id"=>$this->db->insert_id,
+																					"user_id"=>$this->user,
+																					"user_level"=>2
+																					)
+																				);
+				return $this->db->insert_id;
+			}else{
+				return 0;
+			}
 		endif;
 		
 	}
@@ -420,7 +463,19 @@ Class Groups {
 		$query=$this->db->get_results("SELECT `group_id` FROM `".$this->db->prefix."lms_group_tests` WHERE `test_id`=".$post->ID);
 		if(!$query) return false;
 		foreach ($query as $key => $value) {
-			if($value->group_id == $_COOKIE['current_group']) return $value->group_id;
+			if(isset($_COOKIE['current_group']))
+				if($value->group_id == $_COOKIE['current_group']) return $value->group_id;
+		}
+	}
+
+	public function add_user_in_group($group_id, $user_id){
+		if($group_id==null || $user_id==null){
+			return false;
+		}else{
+			$this->db->insert($this->db->prefix."lms_group_users", array(	'user_id'=>$user_id,
+																	 		'group_id'=>$group_id,
+																	 		'user_level'=>0
+																	 		));
 		}
 	}
 

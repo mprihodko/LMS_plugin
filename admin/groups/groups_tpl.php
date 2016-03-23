@@ -18,7 +18,7 @@
 				<li id="group-<?=$group_data->group_id?>" class="group_row <?=(($group_data->remove==1)? 'removed' : '')?>">				
 					<ul class="group-data-list">
 						<li class="id">
-							<?=$group_data->group_id?>
+							<?= $group_data->text_id ? $group_data->text_id : 'none' ?>
 						</li>
 						<li class="name">
 						<?php if($group_data->name): ?>

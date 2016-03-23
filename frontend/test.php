@@ -1,7 +1,7 @@
 <?php global $post; ?>
 <?php if(isset($_GET['group']) && !isset($_COOKIE['current_group'])) $_COOKIE['current_group']=$_GET['group']; ?>
+<?php if(!isset($_GET['part']) && !isset($_GET['certificate']) && isset($_COOKIE['current_group'])){ wp_redirect("?part=".$GLOBALS['tests']->get_part(get_the_ID())."&group=".$_COOKIE['current_group']); } ?>
 
-<?php if(!isset($_GET['part']) && !isset($_GET['certificate'])){ wp_redirect(get_the_permalink()."?part=".$GLOBALS['tests']->get_part(get_the_ID())); } ?>
 <?php $user=$GLOBALS['users']->user ?>
 <?php $media = unserialize($GLOBALS['tests']->has_media($post->ID)); ?>
 

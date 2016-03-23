@@ -1,17 +1,19 @@
 <div class="groups_wrapper" id="admin_edit_groups">
-	<form action='<?=((is_admin())? admin_url('admin.php?page=lms_groups') : home_url('/groups/'))?>' method='POST'>
+
+	<form action='<?=((is_admin())? admin_url('admin.php?page=lms_groups_edit&group='.$this->insert_id) : home_url('/groups/'))?>' method='POST'>
 	<div class="title_page_groups">
 		<span><?=(($group->group_id>0)?$group->name: "NEW GROUP")?></span>
-		<input type='submit' class="add-new-group" value='<?php echo ((isset($_GET['group'])) ? (($_GET['group']>0)? 'Save Group' : 'Add New Group') : 'Add New Group'); ?>'/>
-		<?php echo ((isset($_GET['group'])) ? (($_GET['group']>0)? '<input type="button" id="copyGroup" data-id="'.$_GET['group'].'" value="Copy" class="add-new-group copy_group" >' : '' ) : '')?>
-		<?php echo ((isset($_GET['group'])) ? (($_GET['group']>0)? '<input type="button" id="viewGroupReports" data-id="'.$_GET['group'].'" value="View Group Reports" class="add-new-group view_group_reports" >' : '' ) : '')?>
-	</div>			
+		<input type='submit' class="add-new-group" value='<?php echo ((isset($this->insert_id)) ? (($this->insert_id>0)? 'Save Group' : 'Add New Group') : 'Add New Group'); ?>'/>
+		<?php echo ((isset($this->insert_id)) ? (($this->insert_id>0)? '<input type="button" id="copyGroup" data-id="'.$this->insert_id.'" value="Copy" class="add-new-group copy_group" >' : '' ) : '')?>
+		<?php echo ((isset($this->insert_id)) ? (($this->insert_id>0)? '<input type="button" id="viewGroupReports" data-id="'.$this->insert_id.'" value="View Group Reports" class="add-new-group view_group_reports" >' : '' ) : '')?>
+	</div>	
+		<?php echo $this->error!='' ?  $this->error : '' ?>		
 		<input type='hidden' id="group_id" name='group_id' value='<?=$group->group_id?>' />		
 		<div class='form-table'>
 			<ul class="table-row">
 				<li class="column-head">Name</li>
 				<li class="column-input">
-					<input type='text' name='lms_gropup_name' <?php echo (($group->group_id>0)? 'value="'.htmlentities($group->name).'"' : 'placeholder="'.htmlentities($group->name).'"'); ?> required/>
+					<input type='text' name='lms_gropup_name' <?php echo (($group->name!='Group Name')? 'value="'.htmlentities($group->name).'"' : 'placeholder="'.htmlentities($group->name).'"'); ?> required/>
 				</li>						
 			</ul>
 			<ul class="table-row">
@@ -225,7 +227,7 @@
 			</div>
 		</div>	
 			<div class='submit-form-group'>
-				<input type='submit' value='<?php echo ((isset($_GET['group'])) ? (($_GET['group']>0)? 'Save Group' : 'Add New Group') : 'Add New Group'); ?>' class='add-new-group' />			
+				<input type='submit' value='<?php echo ((isset($this->insert_id)) ? (($this->insert_id>0)? 'Save Group' : 'Add New Group') : 'Add New Group'); ?>' class='add-new-group' />			
 			</div>
 	</form>
 	<div id="report_modal" style="display: none;">

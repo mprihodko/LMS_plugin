@@ -115,7 +115,7 @@
 										<input class="quest_title_field" type="text" name="int_quest[<?=$step_num?>][<?=$quest_num?>]" value="<?=$quest_data['quest_title']?>">
 										<input type="hidden" name="type_of_quest[<?=$step_num?>][<?=$quest_num?>]" value="<?=$quest_data['quest_type']?>" required>
 										<h5>Answers</h5>
-										<ul>
+										<ul class="step-<?=$step_num?>-quest-<?=$quest_num?>-answers">
 
 											<!-- FOREACH ANSWERS -->
 											<!-- ANSWERS TRUE/FALSE -->
@@ -148,14 +148,18 @@
 											<!-- ANSWERS IMAGES -->		
 											<?php elseif($quest_data['quest_type']=="image"):?>
 												<?php if(isset($quest_data['answers'])): ?>
+
 												<?php foreach ($quest_data['answers'] as $answer_num => $answer): ?>												
 													<li>
-														<input type="checkbox" class="select_true" style="position: relative; top: -45px;" value="" <?=(($answer==$quest_data['true'])? 'checked' : '')?>>
+														<input required type="radio" name="int_true_select[<?=$step_num?>][<?=$quest_num?>][]" class="select_true" style="position: relative; top: -45px;" value="" <?=(($answer==$quest_data['true'])? 'checked' : '')?>>
 														<input type="hidden" class="answer_hidden" name="int_true[<?=$step_num?>][<?=$quest_num?>][]" value="<?=(($answer==$quest_data['true'])? 'true' : 'false')?>" required>
-														<img height="100" src="<?=$answer?>" alt="answer-<?=$answer_num?>"
+														<img height="100" src="<?=$answer?>" alt="answer-<?=$answer_num?>">
+														<input type="hidden" name="image_a_url[<?=$step_num?>][<?=$quest_num?>][]" value="<?=$answer?>">
+														<a data-answer="<?=$answer_num?>" data-questnum="<?=$quest_num?>" data-step="<?=$step_num?>" class="delAnswer actionImage"><i class="fa fa-minus-circle"></i></a>
 														<?php if($answer_num==count($quest_data['answers'])):?>
-															<a data-answer="<?=$answer_num?>" data-questnum="<?=$quest_num?>" data-step="<?=$step_num?>" class="addAnswer"><i class="fa fa-plus-circle"></i></a>
+															<a data-answer="<?=$answer_num?>" data-questnum="<?=$quest_num?>" data-step="<?=$step_num?>" class="addAnswerImg actionImage"><i class="fa fa-plus-circle"></i></a>
 														<?php endif; ?>
+
 													</li>
 												<?php endforeach; ?>
 												<?php endif; ?>	

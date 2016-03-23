@@ -46,14 +46,14 @@
     				var next_step=step+1;    				
     				var tpl = $("#interaction_step_tpl").html();
     				var output = tpl.replace(/{step}/g, next_step);	    				
-	    			$(".course_steps").append(output);
+	    			$(".course_steps").append(output); 
 	    			$(".editor_wrap_step_"+next_step).wp_editor();
 	    			$(this).parent().remove();	    			
     			});
     		},
 
     		/* add step video*/
-    		addVideoStep:function(){
+    		addVideoStep:function(){ 
     			$(".AddStepVideo").live("click", function(e){
     				e.preventDefault();
     				var step = parseInt($(this).data('step'));
@@ -154,6 +154,7 @@
                     $(this).parent().parent().find(".answer_hidden").attr("value", "false");
                     $(this).parent().find(".answer_hidden").attr("value", "true");                  
                     $(this).parent().parent().find(".select_true").removeAttr("checked");
+                    $(this).parent().parent().find(".select_true").removeAttr("required");
                     $(this).attr("checked", true);
                 })
             },

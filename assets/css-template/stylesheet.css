@@ -791,6 +791,61 @@
     margin: 0px;
   }
 }
+body .lms-login-form {
+  padding: 25px;
+  border: 1px solid #cfcfcf;
+}
+body .lms-login-form .register_head {
+  font-size: 30px;
+}
+body .lms-login-form input[type="text"],
+body .lms-login-form input[type="email"],
+body .lms-login-form input[type="password"] {
+  border: 1px solid #d2d2d2;
+  font-size: 13px;
+  color: #747474;
+  padding: 8px 15px;
+  margin-right: 1%;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+body .lms-login-form .error {
+  border: 2px solid red!important;
+}
+body .lms-login-form #wp-submit,
+body .lms-login-form .btn.btn-primary.btn-lg.btn-block {
+  padding: 8px 15px;
+  color: #FFF;
+  background: #F67F45;
+  border: none;
+  margin: 15px 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+body .lms-login-form #wp-submit:focus,
+body .lms-login-form .btn.btn-primary.btn-lg.btn-block:focus {
+  outline: none;
+  border: none;
+}
+body .lms-login-form #wp-submit:hover,
+body .lms-login-form .btn.btn-primary.btn-lg.btn-block:hover {
+  opacity: 0.7;
+  cursor: pointer;
+}
+body .lms-login-form label,
+body .lms-login-form .login-field-icon {
+  font-size: 18px;
+  font-weight: bold;
+}
+body .lms-login-form label input[type="checkbox"],
+body .lms-login-form .login-field-icon input[type="checkbox"] {
+  height: 18px;
+  width: 18px;
+  position: relative;
+  top: -2px;
+}
 #admin_edit_groups {
   display: block;
   width: 100%;
