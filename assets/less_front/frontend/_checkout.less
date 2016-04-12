@@ -1,0 +1,204 @@
+.checkout_wrapper{
+	display: block;
+	width: 100%;
+	float: left;
+	padding: 0;
+	margin: 0;
+	.checkout_tabs{
+		list-style-type: none;
+		display: block;
+		width: 100%;
+		float: left;
+		margin: 0;
+		padding: 0;
+		.checkout_tab{
+		    margin: 10px 0;
+		    float: left;
+		    padding: 0;
+		    width: 100%;
+		}
+		.tab-header{
+			margin: 0;
+			line-height: 1.5em;
+			padding: 10px 15px;
+			text-align: left;
+			width: 100%;
+			display: table;
+			background: @background-tabs;
+			color: #FFF;
+			font-weight: bold;
+			float: left;
+			&.not-active{
+				cursor: default;
+				pointer-events: none;
+			}
+			i{
+				text-align: right;
+				display: table-cell;
+				vertical-align: middle;
+				width: 30px;
+				&:hover{
+					cursor: pointer;
+					opacity: 0.8;					
+				}
+			}
+		}
+		.checkout_tab_content{
+			float: left;
+			border: 1px solid @color3;
+			width: 100%;
+			display: none;
+			&.active{
+				display: block;
+			}
+			#payment_sys{
+				width: 80%;
+				margin: 25px 10%;
+				display: block;
+				padding: 15px;
+			}
+			#authorize,
+			#paypal{
+				display: none;
+			    width: 50%;
+			    padding: 0 10%;
+			    .date-separator{
+			    	margin-right: 5px;
+			    }
+			    label{
+			    	display: block;
+			    	font-weight: bold;
+			    	font-size: 16px;
+			    }
+			    input{
+			    	margin: 5px 0;
+			    	width: 100%;
+			    	&.date{
+			    		width: 60px;
+					    margin-right: 5px;
+					    text-align: center;
+			    	}
+			    	&.cvv{
+			    		width: 80px;
+			    		margin-right: 5px;
+			    	}
+
+			    }
+			    select{
+			    	display: block;
+			    	width: 100%;
+			    	margin: 5px 0;
+			    	padding: 7px;
+			    }
+			}
+			.pay_btn,
+			.next_btn{
+				background: @background-tabs;
+				color: #FFF;
+				font-weight: bold;
+				float: right;
+				padding: 10px 15px;
+				box-shadow: 0 0 10px rgba(0,0,0,0.1);
+				transition: box-shadow 0.2s ease-in-out;
+				border: none;
+				margin: 25px 50px;
+				&:hover{
+					cursor: pointer;
+					box-shadow: 0 0 10px rgba(0,0,0,0.5);
+					transition: box-shadow 0.2s ease-in-out;
+				}
+			}
+			.prev_btn{
+				background: @background-tabs;
+				color: #FFF;
+				font-weight: bold;
+				float: left;
+				padding: 10px 15px;
+				box-shadow: 0 0 10px rgba(0,0,0,0.1);
+				transition: box-shadow 0.2s ease-in-out;
+				border: none;
+				margin: 25px 50px;
+				&:hover{
+					cursor: pointer;
+					box-shadow: 0 0 10px rgba(0,0,0,0.5);
+					transition: box-shadow 0.2s ease-in-out;
+				}
+			}
+			.userAction{
+				float: left;
+				width: 44%;
+				margin: 15px 3%;
+				.lms-login-form{
+					border:none;
+				}
+				form{
+					float: none;
+					border:none;
+					width: 100%;
+				}
+				&.user_billing_info{
+					float: left;
+					width: 94%;
+					margin: 15px 3%;
+				}
+			}
+			.cart_products{
+				float: left;
+				display: block;
+				width: 94%;
+				margin: 15px 3%;
+				list-style-type: none;
+				li{
+					float: left;
+					width: 100%;
+					display: table;
+					&:nth-last-child(2){
+						border-bottom: none;
+					}
+					&:nth-last-child(3){
+						border-bottom: none;
+					}
+					&.cart-totals{
+						border-top: 2px solid #000;
+						border-bottom: none;
+						padding: 15px 5px 5px;
+					}					
+					border-bottom: 1px solid @color8;
+					padding: 5px 5px;	
+					.cart_info{
+						display: table-cell;
+						vertical-align: middle;
+						&.product_name{
+							width: 60%;
+						}
+						&.product_total{
+							width: 75%;
+							font-size:18px;
+							font-weight: bold; 
+						}
+						&.views{
+							width: 15%;
+							input{
+								border: 1px solid #d2d2d2;
+							    font-size: inherit;
+							    color: #747474;
+							    padding: 8px 15px;
+							    margin: 0 15%;
+							    width: 70%;
+							    -webkit-box-sizing: border-box;
+							    -moz-box-sizing: border-box;
+							    box-sizing: border-box;
+							}
+						}
+						&.product_price{
+							width: 25%;
+							font-weight: bold;
+							color: #000;
+							text-align: right;
+						}
+					}
+				}
+			}
+		}
+	}
+}
