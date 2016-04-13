@@ -24,7 +24,8 @@ class Templates {
 
 
 	public function page_templates($template){
-		if(!is_user_logged_in() && !is_page('login') && !is_page('cart') && !is_page('checkout') && !is_page('registration') && !is_post_type_archive('lms_product') && !is_singular('lms_product') && !is_front_page()){
+		if(!is_user_logged_in() && !is_page('login') && !is_page('cart') && !is_page('checkout') && !is_page('registration') && !is_post_type_archive('lms_product') && !is_singular('lms_product') && !is_front_page() && !is_tax( 'product_type' )){
+			
 			wp_redirect(home_url('login'));
 		}
 		if((is_post_type_archive('lms_test') && $this->userrole=='administrator' && !isset($_GET["part"])) || (is_post_type_archive('lms_test') && !isset($_GET['group_name']) 

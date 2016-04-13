@@ -620,7 +620,8 @@ videoEnded();
                     success: function(data){           
                       response = $.parseJSON(data);
                       if(response.loggedin==true){
-                        _checkout.getUserDetail();                
+                        // _checkout.getUserDetail(); 
+                        window.location.reload();               
                       }else{
                         $("#login_message").html(response.message);
                       }              
@@ -756,6 +757,7 @@ videoEnded();
         $.each($(".checkout_views"), function(){
             views.push($(this).val())            
         })
+        $("body").waiting({ fixed: true });
         $.ajax({
           type: 'POST',           
           url: _checkout.ajaxUrl,
@@ -774,6 +776,8 @@ videoEnded();
             'payment': payment
           },
           success: function(json){
+            $(".waiting-container.overlay.fixed").remove();
+            $("body").removeClass("waiting");
             result=$.parseJSON(json);
             if(result.status==1){
               if($("body").find("#thank_you").length>0){
@@ -784,7 +788,8 @@ videoEnded();
               }
               $("#thank_you" ).dialog({
                   autoOpen: false,
-                  modal: true,               
+                  modal: true, 
+                  dialogClass: "succeses_add_order fixed",              
                   show: {
                     effect: "blind",
                       duration: 1000
@@ -797,12 +802,15 @@ videoEnded();
               $("#thank_you").dialog( "open" );
             }else{
               if($("body").find("#thank_you").length>0){
-                $("#thank_you").html(result.error);
+                $("#thank_you").html(result.error);               
               }else{
                 $("body").append("<div id='thank_you'></div>");
                 $("#thank_you").html(result.error);
               }
             }
+            $(".succeses_add_order .ui-dialog-titlebar-close").live("click", function(){
+              window.location=location.protocol + "//" + location.host
+            })
           } 
         });
       });

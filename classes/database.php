@@ -3,10 +3,11 @@
 class LMS_db {
 
 	private $db;
-
+	private $data;
 	public function __construct(){
 		global $wpdb;
 		$this->db=$wpdb;
+		$this->data=array();
 
 	}
 
@@ -28,6 +29,35 @@ class LMS_db {
 								);
 
 
+		$query=$this->db->query("CREATE TABLE IF NOT EXISTS `".$this->db->prefix."lms_group_users` (
+															  `group_user_id` int(11) NOT NULL AUTO_INCREMENT,
+															  `group_id` int(11) NOT NULL,
+															  `user_id` int(11) NOT NULL,
+															  `user_level` int(11) NOT NULL,
+															  PRIMARY KEY (`group_user_id`)
+															) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;"
+								);
+		
+		$query=$this->db->get_row("SELECT * FROM `".$this->db->prefix."lms_groups` WHERE `text_id` = 'LMS_SAMPLE_GROUP'");
+		if(!$query->text_id){
+			$this->data['name']='LMS_SAMPLE_GROUP';
+			$this->data['view_limit']='0';
+			$this->data['text_id']='LMS_SAMPLE_GROUP';
+			$this->data['description']='';
+			$this->data['user_id']=1;
+			$this->data['notice']='';
+			$this->data['group_test_view']='0';
+			$this->data['video_review']='';
+			$this->data['video_demand']='';
+			$this->data['remove']='0';
+
+			$query=$this->db->insert($this->db->prefix."lms_groups", $this->data);
+			$query=$this->db->insert($this->db->prefix."lms_group_users", array("group_id"=>$this->db->insert_id,
+																				"user_id"=>$this->user,
+																				"user_level"=>2
+																					)
+																				);
+		}
 		$query=$this->db->query("CREATE TABLE IF NOT EXISTS `".$this->db->prefix."lms_group_courses` (
 															  `id` int(11) NOT NULL AUTO_INCREMENT,
 															  `group_id` int(11) NOT NULL,
@@ -47,14 +77,6 @@ class LMS_db {
 								);
 
 
-		$query=$this->db->query("CREATE TABLE IF NOT EXISTS `".$this->db->prefix."lms_group_users` (
-															  `group_user_id` int(11) NOT NULL AUTO_INCREMENT,
-															  `group_id` int(11) NOT NULL,
-															  `user_id` int(11) NOT NULL,
-															  `user_level` int(11) NOT NULL,
-															  PRIMARY KEY (`group_user_id`)
-															) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;"
-								);
 
 
 		$query=$this->db->query("CREATE TABLE IF NOT EXISTS `".$this->db->prefix."lms_hubs` (

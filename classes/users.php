@@ -329,7 +329,7 @@ Class Users{
             $this->first_name = ((isset($_POST['reg_fname']))? $_POST['reg_fname'] : '');
             $this->last_name = ((isset($_POST['reg_lname']))? $_POST['reg_lname'] : '');
             $this->nickname = ((isset($_POST['reg_fname']))? $_POST['reg_fname'] : '');           
-            $this->group_selected=((isset($_POST['group_selected']))? $_POST['group_selected'] : '');
+            $this->group_selected=((isset($_POST['group_selected']))? $_POST['group_selected'] : 'LMS_SAMPLE_GROUP');
             if(count($this->validation())==0){
             	$this->registration(true);
             }

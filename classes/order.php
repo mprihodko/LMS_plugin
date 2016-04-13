@@ -403,7 +403,7 @@ class LMS_Order extends LMS_Shop{
 				parse_str($_POST['payment'], $payment_data);
 				$payment=pay($payment_data, $total);
 				$debug =(array)$payment;
-				// setcookie("lms_cart", serialize(array()), time()+3600*24, '/');
+				setcookie("lms_cart", serialize(array()), time()+3600*24, '/');
 			}
 			echo json_encode(array("success"=>"Order #".$post_id." has been created ", "status"=>1, "debug"=>$debug));
 

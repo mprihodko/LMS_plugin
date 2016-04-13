@@ -39,7 +39,7 @@
 							</a>
 						</li>
 						<li class="actions">	
-																	
+							<?php if($group_data->text_id!='LMS_SAMPLE_GROUP'):?>										
 							<a id="delete-<?=$group_data->group_id?>" href="javascript: <?=(($group_data->remove==1)? 'deleteGroup('.$group_data->group_id.');' : 'removeGroup('.$group_data->group_id.');')?>" class="group_action delButton">
 								Delete <i class="fa fa-trash"></i>
 							</a>
@@ -56,6 +56,9 @@
 								 <a  id="restore-<?=$group_data->group_id?>" class="group_action group_restore " <?=(isset($display)? $display : '')?> href="javascript: restoreGroup(<?=$group_data->group_id?>)">
 								 	Restore <i class="fa fa-upload"></i>
 								 </a>
+							<?php else: ?>
+								<span>DEFAULT GROUP</span>
+							<?php endif; ?>
 						</li>
 					</ul>				
 				</li>
