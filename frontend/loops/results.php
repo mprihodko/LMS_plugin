@@ -18,7 +18,7 @@
 		<?php } ?>
 	<?php endif; ?>				
 	</ul>
-	<a href="<?=home_url()?>/tests/" title="" class="dt-sc-button small">Return to My Tests</a> 
+	<a href="<?=home_url()?>/examination/" title="" class="dt-sc-button small">Return to My Tests</a> 
 <?php else: ?>
 	
 	<div class="error-info">

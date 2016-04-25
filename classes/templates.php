@@ -28,15 +28,17 @@ class Templates {
 			
 			wp_redirect(home_url('login'));
 		}
-		if((is_post_type_archive('lms_test') && $this->userrole=='administrator' && !isset($_GET["part"])) || (is_post_type_archive('lms_test') && !isset($_GET['group_name']) 
+		if(((is_post_type_archive('lms_test') || is_tax('test_category')) && $this->userrole=='administrator' && !isset($_GET["part"])) 
+			|| ((is_post_type_archive('lms_test') || is_tax('test_category')) && !isset($_GET['group_name']) 
 			&& !isset($_GET["part"]))){
 			$template=TPL_DIR."user_archive.php";
 		}
-		if((is_post_type_archive('lms_test') && $this->userrole=='administrator' && isset($_GET["part"])) || (is_post_type_archive('lms_test') && isset($_GET['group_name']) 
+		if(((is_post_type_archive('lms_test') || is_tax('test_category')) && $this->userrole=='administrator' && isset($_GET["part"]))
+			|| ((is_post_type_archive('lms_test') || is_tax('test_category')) && isset($_GET['group_name']) 
 			|| isset($_GET["part"]))){
 			$template=TPL_DIR."test_archive.php";
-		}
-		if((is_post_type_archive('lms_test') && !isset($_GET['group_name']) && $this->userrole!='administrator' )){
+		}		  
+		if(((is_post_type_archive('lms_test') || is_tax('test_category')) && !isset($_GET['group_name']) && $this->userrole!='administrator' )){
 			$template=TPL_DIR."user_archive.php";
 		}
 		if(is_page('groups')){	

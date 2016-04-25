@@ -16,6 +16,7 @@
 	            <input name="order_user_login" id="order_user_login" type="text" class="form-control login-field"
 	                   value="<?php echo(isset($GLOBALS['users']->user->user_login) ? $GLOBALS['users']->user->user_login : null); ?>"
 	                   placeholder="Username" required/>
+	                   <small>Enter your Username</small>
 	        </div>
 
 	        <div class="form-group">
@@ -23,6 +24,7 @@
 	            <input name="order_user_email" type="email" class="form-control login-field"
 	                   value="<?php echo(isset($GLOBALS['users']->user->user_email) ? $GLOBALS['users']->user->user_email : null); ?>"
 	                   placeholder="Email" id="order_user_email" required/>
+	                   <small>Enter your Email</small>
 	        </div>
 
 	        <div class="form-group">
@@ -30,6 +32,7 @@
 	            <input name="order_user_fname" type="text" class="form-control login-field"
 	                   value="<?php echo(isset($GLOBALS['users']->user->first_name) ? $GLOBALS['users']->user->first_name : null); ?>"
 	                   placeholder="First Name" id="order_user_fname"/>
+	                   <small>Enter your First Name</small>
 	        </div>
 
 	        <div class="form-group">
@@ -37,6 +40,7 @@
 	            <input name="order_user_lname" type="text" class="form-control login-field"
 	                   value="<?php echo(isset($GLOBALS['users']->user->last_name) ? $GLOBALS['users']->user->last_name: null); ?>"
 	                   placeholder="Last Name" id="order_user_lname"/>
+	                   <small>Enter your Last Name</small>
 	        </div>
 	        <?php $cart_items=$GLOBALS['LMS_Cart']->the_Cart(); ?>
 	        <?php $templates=array(); ?>
@@ -48,6 +52,7 @@
 			            <label class="login-field-icon fui-new" for="group_selected"><?=$product->post_title?></label>
 			            <input name="group_id[]" type="text" class="form-control login-field group_selected group_template"	                  
 			                   placeholder="Group ID" data-type="template" id="group_selected-<?=$key?>"/>
+			                  	<small>Enter your Group Identificator</small>
 			        </div>
 			        <?php endif; ?>
 		   		<?php endforeach; ?>
@@ -56,6 +61,7 @@
 			            <label class="login-field-icon fui-new" for="group_selected">Group ID:</label>
 			            <input name="group_id[]" type="text" class="form-control login-field group_selected group_custom"	                  
 			                   placeholder="Group ID" data-type="custom" id="group_selected-<?=count($templates)+1?>"/>
+			                   <small>Enter your Group Identificator</small>
 			        </div>
 		         <?php endif; ?>			
 			<?php endif; ?>

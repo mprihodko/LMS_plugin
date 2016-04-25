@@ -296,7 +296,7 @@ class Reports{
 
 
 	/*check pass test per user*/
-	public function has_passed($test_id=null, $group_id=null, $user){		
+	public function has_passed($test_id=null, $group_id=null, $user=null){		
 		if($test_id==null || $group_id==null) return false;
 		if($user==null) $user=$this->user;
 		$passes=$this->the_test_result_info($test_id, $group_id, $user);		

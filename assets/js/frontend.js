@@ -704,7 +704,7 @@ videoEnded();
           if(response.exist=="fail"){
             $.each(response.groups, function(i, v){
               $("#group_selected-"+v).attr('value', '');  
-              $("#group_selected-"+v).after("<span class='error_message' id='alreadyExist'>Group is already exist</span>");    
+              $("#group_selected-"+v).after("<span class='error_message' id='alreadyExist'>Group is already exist or you haven't permission to manage this group</span>");    
             });
           }else{
             $("#alreadyExist").remove();            

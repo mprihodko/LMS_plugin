@@ -77,6 +77,35 @@
     background: #F67F45;
     font-weight: bold;
   }
+  .lms .shop_sort.with_search {
+    float: right;
+    width: 70%;
+  }
+  .lms #lms_search {
+    margin: 10px 0;
+    float: left;
+    width: 30%;
+  }
+  .lms #lms_search input[type="text"] {
+    padding: 12px 5px;
+    font-size: 13px;
+    display: inline;
+    float: left;
+    width: 80%;
+    margin: 0;
+  }
+  .lms #lms_search button {
+    display: table-cell;
+    float: left;
+    width: 20%;
+    margin: 0;
+    height: 41px;
+    vertical-align: middle;
+    background: #F67F45;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
   .lms .page-title-groups {
     float: left;
     text-align: center;
@@ -3303,6 +3332,7 @@ body .ui-button-text:focus {
   border-bottom: 2px solid #cccccc;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.2s ease-in-out;
+  cursor: pointer;
 }
 #product-list .the_product_wrapper .product-info:hover {
   color: #000000;
@@ -3373,6 +3403,19 @@ body .ui-button-text:focus {
   opacity: 0.9;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
   transition: box-shadow 0.2s ease-in-out;
+}
+#product-list .the_product_wrapper .product-info .taxes {
+  margin: 10px 0;
+  font-size: 14px;
+  display: block;
+}
+#product-list .the_product_wrapper .product-info .taxes a {
+  font-weight: bolder;
+  color: #cfcfcf;
+  font-size: 16px;
+}
+#product-list .the_product_wrapper .product-info .taxes a:hover {
+  color: #F67F45;
 }
 @media screen and (max-width: 960px) {
   #product-list {
@@ -4264,6 +4307,16 @@ body .ui-button-text:focus {
   font-weight: bold;
   color: #000;
   text-align: right;
+}
+#access_to_group {
+  border: none;
+  color: #fff;
+  background: #F67F45;
+  padding: 10px;
+  font-weight: 600;
+  border-radius: 12px;
+  margin: 10px auto;
+  width: 100%;
 }
 .waiting-container {
   min-height: 16px;

@@ -12,6 +12,7 @@ Class Tests{
 	public $user;
 	public $token;
 	public $the_score;
+	public $pagination;
 
 	/*construct*/
 	public function __construct(){
@@ -19,7 +20,7 @@ Class Tests{
 		$this->db=$wpdb;
 		$this->user=$GLOBALS['users']->user->ID;
 		$this->token='';
-
+		$this->pagination='';
 		if(isset($_GET['post']))
 			$this->test=$_GET['post'];	
 
@@ -33,15 +34,20 @@ Class Tests{
 		if(isset($_GET['save_test'])){			
 			add_action('init',						array($this, 'save_post_front_end'));
 		}
-		
-		add_action( 'init', 					array($this, 'register_lms_test_posttype'));	
+		add_action( 'init',						array($this, 'create_test_taxonomies'), 0 );
+		add_action( 'init', 					array($this, 'register_lms_test_posttype'));
+		add_action('init', 						array( $this, 'rewrite_rule_tax' ),1);	
 		add_action('add_meta_boxes', 			array($this, 'lms_add_meta'));	
 		add_action('admin_enqueue_scripts', 	array($this, 'include_upload_script_thumbnail'));
 		add_action('save_post', 				array($this, 'save_test'), 10, 1); 
 		add_action('before_delete_post', 		array($this, 'deleteTest'), 10, 1);
 		add_action('post_edit_form_tag', 		function(){ echo ' enctype="multipart/form-data"'; });
 
-
+		add_filter('post_link',					array( $this, 'filter_post_type_link'), 1, 3);
+		add_filter('post_type_link', 			array( $this, 'filter_post_type_link'), 1, 3);
+		add_filter( 'generate_rewrite_rules',	array($this, 'taxonomy_slug_rewrite'),1);
+		add_filter( 'rewrite_rules_array', 		array($this, 'my_insert_rewrite_rules') );
+		add_action( 'wp_loaded', 				array($this, 'my_flush_rules') ); 
 	}
 
 
@@ -58,6 +64,53 @@ Class Tests{
 		}						 	
 	}
 
+	public function rewrite_rule_tax(){
+			global $wp_rewrite;	
+			$queryarg = 'post_type=lms_test&p=%lms_test%&id=';
+			$wp_rewrite->add_rewrite_tag('%test_category%', '([^&]+)', $queryarg);						
+			$wp_rewrite->add_permastruct('lms_test', 'examination/%test_category%/%lms_test%/', true);		
+	}		
+
+	function filter_post_type_link( $post_link, $id, $leavename = FALSE ) {		
+	    if ( strpos($post_link, '%test_category%') === 'FALSE' ) {
+	      return $post_link;
+	    }
+	    $post = get_post($id);
+
+	    if (!$post) return $post_link;
+	    if ( !is_object($post) || $post->post_type != 'lms_test' ) {
+	      return $post_link;
+	    }
+	    $terms = wp_get_object_terms($post->ID, 'test_category');
+	  
+	    if (!is_wp_error($terms) && !empty($terms) && is_object($terms[0]))
+        	$taxonomy_slug = $terms[0]->slug;
+        else 
+        	$taxonomy_slug = 'no-type';
+        $new_link=str_replace('%test_category%', $taxonomy_slug, $post_link);
+	    
+	    return $new_link;
+	}
+
+
+	function create_test_taxonomies(){
+
+	  	register_taxonomy(
+		        'test_category',
+		        'lms_test',
+		        array(
+		            'hierarchical' 	=> true,
+		            'public'		=> true,
+		            'label' 		=> 'Test Categories',  //Display name
+		            'query_var' 	=> true,
+		            'rewrite' 		=> array(
+		                'slug' 			=> 'examination/test_category',
+		                'with_front' => false // This controls the base slug that will display before each term
+		            ),
+		            '_builtin'		=> false
+		        )
+		    );
+	}
 	public function register_lms_test_posttype(){
 
 		register_post_type( 'lms_test',	    
@@ -71,9 +124,54 @@ Class Tests{
 			    'menu_position' 	=> 71,
 			    'menu-icon' 		=> 'dashicons-welcome-write-blog',
 			    'rewrite' 			=> array('slug' => 'examination'),
+				'taxonomies'        => array( 'test_category' ),
 		    	)
 		  	);
 	}
+
+	function my_flush_rules(){
+	    $rules = get_option( 'rewrite_rules' );
+	            global $wp_rewrite;
+	    $wp_rewrite->flush_rules();
+	} 
+
+	// Adding a new rule    
+	function my_insert_rewrite_rules( $rules ){
+	    $newrules = array();
+	    $newrules['examination/?$'] = 'index.php?post_type=lms_test';
+	    $newrules['examination/page/?([0-9]{1,})/?$'] = 'index.php?post_type=lms_test&paged=$matches[1]';
+	    $newrules['examination/(.+?)/page/?([0-9]{1,})/?$'] = 'index.php?post_type=lms_test&test_category=$matches[1]&paged=$matches[2]';
+
+	  
+	    // print_r($rules);
+	    return $newrules + $rules;
+	}
+
+
+	function taxonomy_slug_rewrite($wp_rewrite){
+		$newrules = array();
+		$taxonomies = get_taxonomies(array('_builtin' => false, 'name' => 'test_category'), 'objects');
+
+		    // get all custom post types 
+        foreach ($taxonomies as $taxonomy) {
+
+            // go through all post types which this taxonomy is assigned to
+            foreach ($taxonomy->object_type as $object_type) {	
+                          
+                    // get category objects
+                    $terms = get_categories(array('type' => $object_type, 'taxonomy' => $taxonomy->name, 'hide_empty' => 0));		             
+                    
+                    // make rules
+                    foreach ($terms as $term) {                    	
+                        $newrules['examination/' . $term->slug. '/?$'] = 'index.php?' . $term->taxonomy . '=' . $term->slug;	
+                    	$newrules["examination/" . $term->slug. "/page/?([0-9]{1,})/?$"]="index.php?" . $term->taxonomy ."=". $term->slug.'&paged=$matches[1]';
+                    }
+               
+            }
+        }        
+        $wp_rewrite->rules = $newrules + $wp_rewrite->rules;
+	}
+
 	public function lms_add_meta() {
 	
 	    add_meta_box(    	
@@ -211,18 +309,125 @@ Class Tests{
 #																													#
 #####################################################################################################################
 
-	public function get_available_tests(){
+	public function get_available_tests($var=null){		
 		if(!is_user_logged_in()) return;
 		if(current_user_can('administrator')){
-		$user_groups=$GLOBALS['groups']->get_groups();	
+			$user_groups=$GLOBALS['groups']->get_groups();	
 		}else{
 			$user_groups=$GLOBALS['users']->get_user_groups();
 		}
-		foreach ($user_groups as $key => $value) {
-			$tests[$value->group_id]['group']=$GLOBALS['groups']->get_group('group_id', $value->group_id);
-			$tests[$value->group_id]['tests']=$this->get_group_tests($value->group_id);
+		$tests=array();
+		if($var!=null){
+			foreach ($user_groups as $key => $value) {				
+				$group_content=$this->get_group_tests($value->group_id);
+			 	if(is_array($group_content)){	
+			 		$tests[$value->group_id]['group']=$GLOBALS['groups']->get_group('group_id', $value->group_id);		
+					foreach ($group_content as $k => $v) {
+						if(is_object_in_term($v->ID, 'test_category', $var)){						
+							$tests[$value->group_id]['tests'][]=get_post($v->ID);
+						}
+					}
+				}
+			}			
+		}else{
+			foreach ($user_groups as $key => $value) {
+				$tests[$value->group_id]['group']=$GLOBALS['groups']->get_group('group_id', $value->group_id);
+				$tests[$value->group_id]['tests']=$this->get_group_tests($value->group_id);
+			}	
 		}		
-		return $tests;
+		return $tests;		
+	}
+
+	public function all_tests_page_data($var=null, $current_page=null){
+		$post_per_page=get_option( 'posts_per_page' );
+		$offset=0;
+		if($current_page!=null){
+			$offset=$post_per_page*$current_page-$post_per_page;
+		}
+		if(!is_user_logged_in()) return;
+		if(current_user_can('administrator')){
+			$user_groups=$GLOBALS['groups']->get_groups();	
+		}else{
+			$user_groups=$GLOBALS['users']->get_user_groups();
+		}
+		$tests=array();
+		if($var!=null){
+			foreach ($user_groups as $key => $value) {				
+				$group_content=$this->get_group_tests($value->group_id);
+			 	if(is_array($group_content)){	
+			 		$tests[$value->group_id]['group']=$GLOBALS['groups']->get_group('group_id', $value->group_id);		
+					foreach ($group_content as $k => $v) {
+						if(is_object_in_term($v->ID, 'test_category', $var)){						
+							$tests[$value->group_id]['tests'][]=get_post($v->ID);
+						}
+					}
+				}
+			}			
+		}else{
+			foreach ($user_groups as $key => $value) {
+				$tests[$value->group_id]['group']=$GLOBALS['groups']->get_group('group_id', $value->group_id);
+				$tests[$value->group_id]['tests']=$this->get_group_tests($value->group_id);
+			}	
+		}
+		foreach ($tests as $key => $value) {
+			$tests_sort[]=$value;
+		}		
+		for ($i=$offset; $i < $offset+$post_per_page; $i++) { 
+			$page_tests[$i]=$tests_sort[$i];
+		}
+		return	$page_tests;
+	}
+
+
+	public function the_pagination_all_test($var=null, $current_page=null){
+		$post_per_page=get_option( 'posts_per_page' );
+		$offset=0;
+		if($current_page!=null){
+			$offset=$post_per_page*$current_page-$post_per_page;
+		}
+		if(!is_user_logged_in()) return;
+		if(current_user_can('administrator')){
+			$user_groups=$GLOBALS['groups']->get_groups();	
+		}else{
+			$user_groups=$GLOBALS['users']->get_user_groups();
+		}
+		$tests=array();
+		if($var!=null){
+			foreach ($user_groups as $key => $value) {				
+				$group_content=$this->get_group_tests($value->group_id);
+			 	if(is_array($group_content)){	
+			 		$tests[$value->group_id]['group']=$GLOBALS['groups']->get_group('group_id', $value->group_id);		
+					foreach ($group_content as $k => $v) {
+						if(is_object_in_term($v->ID, 'test_category', $var)){						
+							$tests[$value->group_id]['tests'][]=get_post($v->ID);
+						}
+					}
+				}
+			}			
+		}else{
+			foreach ($user_groups as $key => $value) {
+				$tests[$value->group_id]['group']=$GLOBALS['groups']->get_group('group_id', $value->group_id);
+				$tests[$value->group_id]['tests']=$this->get_group_tests($value->group_id);
+			}	
+		}
+		foreach ($tests as $key => $value) {
+			$tests_sort[]=$value;
+		}
+		$this->pagination='';
+		if($var!=null)
+			$link=home_url('examination/'.$var.'/?list=');
+		else
+			$link=home_url('examination/?list=');
+		$pages = ceil(count($tests_sort)/$post_per_page);
+		for($page=1; $page<$pages; $page++){
+			if(($current_page==0 && $page==1) || $current_page==$page){
+				$this->pagination.="<span class='page_icon' >{$page}</span>";
+			}else{
+				$this->pagination.='<a class="next-page" href="'.$link.$page.'"><span aria-hidden="true">'.$page.'</span></a>';
+				
+			}
+		}
+		return $this->pagination;
 	}
 	public function get_group_tests($group_id=null){
 		if($group_id==null) return;
@@ -307,6 +512,35 @@ Class Tests{
 		echo "</ul></fieldset>";
 	}
 
+	public function lms_get_terms(){
+		if(get_bloginfo('version')<4.5){
+			$terms = get_terms( 'test_category', array(
+				'hide_empty' => true,
+			) );
+		}else{
+			$terms = get_terms( array(
+				'taxonomy' => 'test_category',
+				'hide_empty' => true,
+			) );
+		}
+		foreach ($terms as $key => $value) {
+			foreach ($this->get_available_tests($value->slug) as $k => $v) {
+				if(isset($v['tests'])){
+					foreach ($v['tests'] as $test) {						
+						if(is_object_in_term($test->ID, 'test_category', $value->slug)){
+							$available[$value->slug]=$test->ID;
+						}
+					}
+					
+				}			 
+			}
+			if(array_key_exists($value->slug, $available)){
+				$terms_tax[]=$value;
+			}
+		}		
+		if(isset($terms_tax)) return $terms_tax; 
+		else return false;
+	}
 
 
 
@@ -565,7 +799,31 @@ Class Tests{
 			return $post_id;
 
 		$childrens = get_post_meta($post_id, "lms_product_id", true);
+		$categories= get_the_terms($post_id, 'test_category');
+		// var_dump($categories);
+		// die;
+		$taxes[]='goods_test';
+		$tax_id=get_term_by('slug', 'goods_test', 'product_type')->term_id;
 		
+		foreach ($categories as $key => $value) {
+			$insert_tax=wp_insert_term( $value->name, 'product_type', array(	'alias_of'=>'',
+																	'description'=>'',
+																	'parent'=>$tax_id,
+																    'slug'=>$value->slug,
+																)
+							);
+			
+			if(isset($insert_tax->error_data['term_exists'])){
+				$insert_tax=wp_update_term($insert_tax->error_data['term_exists'], 	'product_type', array(	'alias_of'=>'',
+															'description'=>'',
+															'parent'=>$tax_id,
+														    'slug'=>$value->slug,
+																)
+							);
+			}
+			$taxes[]=$value->name;
+		}
+		// die;
 		remove_action('save_post', 				array($this, 'save_test'), 10, 1); 
 		/*save_product*/		
 		$product = array(
@@ -574,8 +832,9 @@ Class Tests{
 			'post_content'   => $_POST['post_content'],
 			'post_type'     => 'lms_product',
 			'post_author'   => $_POST['post_author'],
-			'tax_input'      => array( 'product_type' => array( 'goods_test' ))						
+			'tax_input'      => array( 'product_type' => $taxes)						
 		);
+		
 		if(!$childrens){
 			$product_id = wp_insert_post( $product );		
 		}else{
@@ -583,7 +842,7 @@ Class Tests{
 			$product_id = wp_update_post( $product );
 		}
 		$terms=array('goods_test');
-		wp_set_object_terms( $product_id, $terms, 'product_type', false );
+		wp_set_object_terms( $product_id, $taxes, 'product_type', false );
 		
 		add_action('save_post', 				array($this, 'save_test'), 10, 1);
 		

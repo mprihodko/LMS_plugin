@@ -71,7 +71,7 @@ Class Groups {
 					  					   	'delete_published_posts',
 					  					   	'lms_groups',
 					  					   	array( 	$this,
-					  					   	 	 	'lms_groups_list_admin'
+					  					   	 	 	'lms_groups_list_admin' 
 					  					   		 ),
 					  					   	'dashicons-schedule',
 					  					   	72 
@@ -80,7 +80,7 @@ Class Groups {
 
 		$page_hook_suffix = add_submenu_page( 	'lms_groups',
 							 					'Group Management',
-							 					'Add New',
+							 					'Add New Group',
 							 					'delete_published_posts',
 							 					'lms_groups_edit',
 							 					array(	$this,
@@ -112,8 +112,18 @@ Class Groups {
 							 					 	)
 		
 						 				);		
+		add_action('admin_print_scripts-'.$page_hook_suffix, array($this, 'add_admin_scripts'));
+
+		$page_hook_suffix = add_submenu_page( 	'lms_groups',
+							 					'Group Management',
+							 					'Product Categories',
+							 					'delete_published_posts',
+							 					'edit-tags.php?taxonomy=product_type&post_type=lms_product'
+						 				);		
 		add_action('admin_print_scripts-'.$page_hook_suffix, array($this, 'add_admin_scripts'));	
 	}
+
+	
 
 	/*  enqueue script  */
 	public function add_admin_scripts() {		
@@ -157,15 +167,14 @@ Class Groups {
 		$exist=0;
 		foreach ($groups['group_id'] as $key => $text_id) {		
 			$query=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_groups` WHERE `text_id`='".$text_id."'");
-			if(!$query) $query=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_groups` WHERE `text_id`=".$text_id);	
-			// var_dump(count($query));		
+			if(!$query) $query=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_groups` WHERE `text_id`=".$text_id);			
 			if(count($query)!=0){
 				$exist++;
 				$groups_ex[]=$key+1;
 			}	
 
 		}
-			if($exist==0) echo json_encode(array("exist"=>"ok"));
+			if($exist==0 || $this->get_owner_group($query[0]->group_id)==$this->user) echo json_encode(array("exist"=>"ok"));
 			else echo json_encode(array("exist"=>"fail", "groups"=>$groups_ex));
 			wp_die();
 		}
@@ -209,6 +218,10 @@ Class Groups {
 		}
 		$query_param="`".$field."`=".$val;		
 		$query=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_groups` WHERE ".$query_param);
+		if(!$query){
+			$query_param="`".$field."`='".$val."'";
+			$query=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_groups` WHERE ".$query_param);		
+		}
 		return $query;
 	}	
 
@@ -227,9 +240,15 @@ Class Groups {
 		}
 		$query=$this->db->get_results("SELECT * FROM `".$this->db->prefix."lms_group_tests` WHERE `group_id`=".$query_param);
 		if(is_object($query)|| is_array($query)){	
-			foreach ($query as $key => $value) {
-				$tests[$key]=get_post($value->test_id);
-				$tests[$key]->view_limit=$value->view_limit;
+			foreach ($query as $key => $value) {				
+				if(property_exists($value, 'test_id') && property_exists($value, 'view_limit')){
+					if(get_post($value->test_id)){
+						$tests[$key]=get_post($value->test_id);
+						$tests[$key]->view_limit=$value->view_limit;
+					}else{
+						$this->db->delete($this->db->prefix."lms_group_tests", array('test_id' => $value->test_id));	
+					}
+				}
 			}
 			
 		}
@@ -427,7 +446,7 @@ Class Groups {
 	/* Save Product Groups */
 	public function save_product_group(){
 		$params=array();
-		parse_str($_POST['data_value'], $params);
+		parse_str($_POST['data_value'], $params);		
 		$tests=array();
 		if(isset($params['tests']) && is_array($params['tests'])){
 			foreach ($params['tests'] as $key => $value) {
@@ -447,6 +466,12 @@ Class Groups {
 				update_post_meta($params['group_id'], '_lms_product_type', "groups");
 				update_post_meta($params['group_id'], '_lms_tests', serialize($tests));	
 				$terms=array('goods_groups');
+
+				if(isset($params['groups_terms'])){
+					foreach ($params['groups_terms'] as $key => $value) {
+						$terms[]=$value;
+					}
+				}				
 				wp_set_object_terms( $params['group_id'], $terms, 'product_type', false );
 				$this->product_insert_id=$params['group_id'];					
 			echo $params['group_id'];
@@ -462,6 +487,11 @@ Class Groups {
 			update_post_meta($the_id, '_lms_product_type', "groups");
 			update_post_meta($the_id, '_lms_tests', serialize($tests));
 			$terms=array('goods_groups');
+			if(isset($params['groups_terms'])){
+				foreach ($params['groups_terms'] as $key => $value) {
+					$terms[]=$value;
+				}
+			}		
 			wp_set_object_terms($the_id, $terms, 'product_type', false );
 			$this->product_insert_id=$the_id;
 			echo $the_id;
@@ -570,6 +600,16 @@ Class Groups {
 				endif;			
 			}
 		}
+	}
+
+	public function get_owner_group($group_id=null){
+		if($group_id==null) return;		
+		$query=$this->db->get_results("	SELECT `user_id`
+										FROM  ".$this->db->prefix."lms_group_users
+										WHERE `group_id`=".$group_id." 
+										AND `user_level`=2");
+		return	$query[0]->user_id;									
+
 	}
 
 	public function save_group_courses($group_id=null){

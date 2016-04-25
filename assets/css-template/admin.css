@@ -1311,6 +1311,25 @@ body.groups_page_lms_product_groups_edit #wpcontent #admin_edit_groups .form-tab
 body.groups_page_lms_groups_edit #wpcontent #admin_edit_groups .form-table ul.table-row li {
   padding: 10px;
 }
+body.groups_page_lms_product_groups_edit #wpcontent #admin_edit_groups .form-table ul.table-row .add_category_p_group,
+body.groups_page_lms_groups_edit #wpcontent #admin_edit_groups .form-table ul.table-row .add_category_p_group {
+  text-decoration: none;
+  padding: 10px 15px;
+  background: #28BAF5;
+  color: #FFF;
+}
+body.groups_page_lms_product_groups_edit #wpcontent #admin_edit_groups .form-table ul.table-row .btn_add_cat,
+body.groups_page_lms_groups_edit #wpcontent #admin_edit_groups .form-table ul.table-row .btn_add_cat {
+  margin: 10px 0;
+  text-align: right;
+}
+body.groups_page_lms_product_groups_edit #wpcontent #admin_edit_groups .form-table ul.table-row .term_group_wrapper,
+body.groups_page_lms_groups_edit #wpcontent #admin_edit_groups .form-table ul.table-row .term_group_wrapper {
+  display: inline-block;
+  padding: 0 10px;
+  margin: 0;
+  box-sizing: border-box;
+}
 body.groups_page_lms_product_groups_edit #wpcontent #admin_edit_groups .form-table ul.table-row .column-head,
 body.groups_page_lms_groups_edit #wpcontent #admin_edit_groups .form-table ul.table-row .column-head {
   font-weight: bolder;
@@ -1327,10 +1346,17 @@ body.groups_page_lms_groups_edit #wpcontent #admin_edit_groups .form-table ul.ta
   font-size: 20px;
   width: 75%;
 }
-body.groups_page_lms_product_groups_edit #wpcontent #admin_edit_groups .form-table ul.table-row .column-input input,
-body.groups_page_lms_groups_edit #wpcontent #admin_edit_groups .form-table ul.table-row .column-input input {
+body.groups_page_lms_product_groups_edit #wpcontent #admin_edit_groups .form-table ul.table-row .column-input input[type="text"],
+body.groups_page_lms_groups_edit #wpcontent #admin_edit_groups .form-table ul.table-row .column-input input[type="text"],
+body.groups_page_lms_product_groups_edit #wpcontent #admin_edit_groups .form-table ul.table-row .column-input input[type="number"],
+body.groups_page_lms_groups_edit #wpcontent #admin_edit_groups .form-table ul.table-row .column-input input[type="number"],
+body.groups_page_lms_product_groups_edit #wpcontent #admin_edit_groups .form-table ul.table-row .column-input input[type="password"],
+body.groups_page_lms_groups_edit #wpcontent #admin_edit_groups .form-table ul.table-row .column-input input[type="password"],
+body.groups_page_lms_product_groups_edit #wpcontent #admin_edit_groups .form-table ul.table-row .column-input input[type="email"],
+body.groups_page_lms_groups_edit #wpcontent #admin_edit_groups .form-table ul.table-row .column-input input[type="email"] {
   border-radius: 5px;
   padding: 5px;
+  height: 40px;
 }
 body.groups_page_lms_product_groups_edit #wpcontent #admin_edit_groups .group_attach,
 body.groups_page_lms_groups_edit #wpcontent #admin_edit_groups .group_attach {

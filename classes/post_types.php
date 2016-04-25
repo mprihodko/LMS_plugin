@@ -60,7 +60,7 @@ class LMS_post_types{
 		        array(
 		            'hierarchical' 	=> true,
 		            'public'		=> true,
-		            'label' 		=> 'product_type',  //Display name
+		            'label' 		=> 'Product Types',  //Display name
 		            'query_var' 	=> true,
 		            'rewrite' 		=> array(
 		                'slug' 			=> 'lms_shop/product_type',
@@ -69,6 +69,18 @@ class LMS_post_types{
 		            '_builtin'		=> false
 		        )
 		    );
+	  	wp_insert_term( "Groups", 'product_type', array('alias_of'=>'',
+														'description'=>'',
+														'parent'=>0,
+													    'slug'=>'goods_groups',
+														)
+							);
+	  	wp_insert_term( "Tests", 'product_type', array(	'alias_of'=>'',
+														'description'=>'',
+														'parent'=>0,
+													    'slug'=>'goods_test',
+														)
+							);
 	}
 
 
@@ -81,9 +93,22 @@ class LMS_post_types{
 			        'name' => __( 'Products' ),
 			        'singular_name' => __( 'Product' )
 			    ),
+			    'capability_type' => 'post',
+				'capabilities' => array(
+				    'create_posts' 		 => false, 
+				    'edit_post'          => false,
+					'read_post'          => 'edit_pages',
+					'delete_post'        => 'edit_pages',
+				    'delete_posts'       => 'edit_pages',
+					'edit_posts'         => false,
+					'edit_others_posts'  => false,
+					'publish_posts'      => 'edit_pages',
+					'read_private_posts' => 'edit_pages'
+				 ),
 			    'public' => true,
 			    'has_archive' => true,
-			    'menu_position' => 77,
+			    'menu_position' => null,			   
+			    'show_in_menu'        => null,
 			    'taxonomies' => array("product_type"),
 			    'rewrite' => array('slug' => 'lms_shop', 'with_front' => false)	
 		    	)

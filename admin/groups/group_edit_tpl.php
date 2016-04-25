@@ -45,7 +45,12 @@
 			<ul class="table-row">
 				<li class="column-head">Global view limit</li>
 				<li class="column-input">
-					<input type='text' name='view_limit_group' <?php echo (isset($group) ? 'value="'.htmlentities($group->view_limit).'"' : ''); ?> />
+					<?php if(current_user_can('administrator')): ?>
+						<input type='text' name='view_limit_group' <?php echo (isset($group) ? 'value="'.htmlentities($group->view_limit).'"' : ''); ?> />
+					<?php else:?>
+						<span><?php echo (isset($group) ? 'value="'.htmlentities($group->view_limit).'"' : ''); ?></span>
+						<input type='hidden' name='view_limit_group' <?php echo (isset($group) ? 'value="'.htmlentities($group->view_limit).'"' : ''); ?> />
+					<?php endif; ?>
 				</li>
 			</ul>
 			<ul class="table-row">

@@ -152,6 +152,10 @@
 					</div>
 				</li>
 				<li class="row order-data-info">
+					<div class="row-head">Transication ID :</div>
+					<div class="row-info"><b id="order_total_views"><?=isset($order_data_info['payment_id'])? $order_data_info['payment_id'] : '-' ?></b></div>
+				</li>
+				<li class="row order-data-info">
 					<div class="row-head">Attached Group :</div>
 					<div class="row-info">
 					<?=isset($order_data_info['group_id'])? $order_data_info['group_id'].'<input type="hidden" value="'.$order_data_info['group_id'].'" required name="group_id" >' : '<input type="text" required name="group_id" class="form-control" placeholder="Group ID">' ?>

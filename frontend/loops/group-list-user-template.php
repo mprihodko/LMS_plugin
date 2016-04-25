@@ -18,7 +18,7 @@
 					<li id='group-id-<?=$group->group_id?>'>
 						<div class="group-name">
 							<strong>
-								<a href='<?=home_url()?>/tests?group_name=<?=$group->group_id?>' >
+								<a href='<?=home_url()?>/examination?group_name=<?=$group->group_id?>' >
 								<?=(($group->name)? $group->name : "no-name")?>						
 								</a>
 							</strong>

@@ -20,6 +20,19 @@
 				<?php $price = (isset($product->ID)? get_post_meta($product->ID, "_lms_price", true) : "0.00" )?>
 				<input type='number' min="0.00" step="0.01" name='lms_gropup_price' value = "<?=((isset($price) && $price!='')? number_format($price, 2, ".", '') : '0.00')?>" required/>
 				</li>						
+			</ul>
+			<ul class="table-row">
+				<li class="column-head">Categories</li>	
+				<?php //var_dump(get_the_terms($product->ID, "product_type")); ?>			
+				<?php foreach(LMS_Shop::lms_get_terms_products_type() as $key => $value): ?>
+					<div class="term_group_wrapper">
+						<input type="checkbox" name="groups_terms[]" value="<?=$value->slug?>" <?=isset($product->ID)?(has_term($value->slug, "product_type", $product->ID)? 'checked' : '') : ''?>>
+						<span> - <strong><?=$value->name?></strong></span> 
+					</div> 
+				<?php endforeach; ?>
+				<div class="btn_add_cat">
+					<a href="<?=admin_url('edit-tags.php?taxonomy=product_type&post_type=lms_product')?>" target='blank' class="add_category_p_group" >+ Add Category </a>
+				</div>						
 			</ul>	
 		</div>
 		<div class="group_attach">

@@ -104,6 +104,22 @@ body.groups_page_lms_groups_edit{
 					li{
 						padding:  @margin-standart;
 					}
+					.add_category_p_group{
+						text-decoration: none;
+						padding: 10px 15px;
+						background: @button-color;
+						color: #FFF;
+					}
+					.btn_add_cat{
+						margin: 10px 0;
+						text-align: right;
+					}
+					.term_group_wrapper{
+						display: inline-block;
+						padding: 0 10px;
+						margin: 0;
+						box-sizing: border-box;
+					}
 					.column-head{
 						font-weight: bolder;
 						font-size:  @title-box-font-size+(-2);
@@ -116,10 +132,15 @@ body.groups_page_lms_groups_edit{
 						line-height: @line-height;
 						display: table-cell;
 						font-size:  @title-box-font-size+(-2);
-						input{
+						input[type="text"],
+						input[type="number"],
+						input[type="password"],
+						input[type="email"]{
 							border-radius: 5px;
 							padding: @margin-standart/2;
+							height: 40px;	
 						}
+						
 						width: 75%;
 					}
 				}

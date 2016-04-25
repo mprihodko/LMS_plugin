@@ -349,8 +349,8 @@ class LMS_Order extends LMS_Shop{
 					$this->data['remove']='0';
 					$query=$this->db->insert($this->db->prefix."lms_groups", $this->data);
 					$new_group_id=$this->db->insert_id;
-					$query=$this->db->insert($this->db->prefix."lms_group_users",
-											 array("group_id"=>$new_group_id, "user_id"=>$_POST['order_user_id'], "user_level"=>2));
+					$add_user=true;
+					
 					
 					foreach ($data['tests'] as $test => $views) {
 						/*insert*/
@@ -374,6 +374,47 @@ class LMS_Order extends LMS_Shop{
 													);
 						endif;								
 					}			
+				}else{
+					$existing_group=$GLOBALS['groups']->get_group("text_id", $key)[0];	
+					$this->data['name']=((isset($existing_group->name))?strip_tags(trim($existing_group->name)) : '');
+					$this->data['view_limit']=(int)$data['data_info']['total_views']+(int)$existing_group->view_limit;
+					$this->data['text_id']=((isset($key))?strip_tags(trim($key)) : '');
+					$this->data['description']=$existing_group->description;
+					$this->data['user_id']=$_POST['order_user_id'];
+					$this->data['notice']=((isset($_POST['notice']))?strip_tags(trim($_POST['notice'])) : '');
+					$this->data['group_test_view']=((isset($_POST['group_test_view']))?strip_tags(trim($_POST['group_test_view'])) : '');
+					$this->data['video_review']=((isset($_POST['video_review']))?strip_tags(trim($_POST['video_review'])) : '');
+					$this->data['video_demand']=((isset($_POST['video_demand']))?strip_tags(trim($_POST['video_demand'])) : '');
+					$this->data['remove']='0';
+					$add_user=false;
+					$this->db->update(  $this->db->prefix."lms_groups",
+									$this->data,
+									array( 'group_id' => $existing_group->group_id)
+								
+								);
+					foreach ($data['tests'] as $test => $views) {
+						/*insert*/
+						$query=$this->db->get_results("	SELECT *
+														FROM  ".$this->db->prefix."lms_group_tests
+														WHERE `group_id`=".$existing_group->group_id."
+														AND `test_id`=".$test );			
+						if(isset($query[0]->test_id) && $query[0]->test_id==$test):
+							$update_views=$views+$query[0]->view_limit;
+							$query=$this->db->update($this->db->prefix."lms_group_tests",
+													 array(	'view_limit'=>strip_tags(trim($update_views))),
+													 array(	"group_id"=>$existing_group->group_id,
+													 	   	"test_id"=>$test)
+													);
+						else:
+							$query=$this->db->insert($this->db->prefix."lms_group_tests",
+													 array(	'test_id'=>$test,
+													 		'group_id'=>$existing_group->group_id,
+													 		'view_limit'=>strip_tags(trim($views))
+													 		)
+													);
+						endif;								
+					}
+					$new_group_id=$existing_group->group_id;					
 				}
 				remove_action('save_post', 				array($this, 'lms_save_order'), 10, 1); 
 					$post_data = array(
@@ -393,9 +434,11 @@ class LMS_Order extends LMS_Shop{
 
 				add_action('save_post', 				array($this, 'lms_save_order'), 10, 1);
 				$order=serialize($data);
-				if(update_post_meta($post_id, '_lms_order_totals', $order)){
+				$orders_ids[$post_id]=$data;
+				update_post_meta($post_id, '_lms_order_totals', $order);
+				// var_dump($orders_ids);
 					
-				}
+				
 			}
 			if(isset($_POST['payment'])){
 				$total=number_format($GLOBALS['LMS_Cart']->the_cart_total(), 2, ".", "");				
@@ -404,11 +447,24 @@ class LMS_Order extends LMS_Shop{
 				$payment=pay($payment_data, $total);
 				$debug =(array)$payment;
 				setcookie("lms_cart", serialize(array()), time()+3600*24, '/');
+				
+				if($payment->state=='approved'){
+					foreach ($orders_ids as $key => $value) {
+						$value['data_info']['status']="complete";
+						$value['data_info']['payment_id']=$payment->id;
+						$order_complete=serialize($value);
+						update_post_meta($key, '_lms_order_totals', $order_complete);
+					}
+					if($add_user){
+						$query=$this->db->insert($this->db->prefix."lms_group_users",
+												array("group_id"=>$new_group_id, "user_id"=>$_POST['order_user_id'], "user_level"=>2));
+					}
+				}
 			}
-			echo json_encode(array("success"=>"Order #".$post_id." has been created ", "status"=>1, "debug"=>$debug));
+			echo json_encode(array("success"=>"Order #".$post_id." has been created <button id='access_to_group' onclick='window.location=\"".home_url('examination/?group_name='.$new_group_id)."\"'>ACCESS MY TESTS</button>", "status"=>1, "debug"=>$debug));
 
 		}else{
-			echo json_encode(array("error"=>"Error Action Pay", "status"=>0));
+			echo json_encode(array("error"=>"Error Action Pay", "status"=>0, "debug"=>$debug));
 		}
 		wp_die();
 	}

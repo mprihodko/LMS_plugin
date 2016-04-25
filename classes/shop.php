@@ -38,7 +38,7 @@ class LMS_Shop extends Tests{
 	/*Get Products*/
 	public static function the_products($var=null, $page=null){
 		if($page==null) $offset=0;
-		else $offset=1*$page;
+		else $offset=20*$page;
 		$args=array(
 			'numberposts'     => 20, 
 			'offset'          => $offset,
@@ -46,6 +46,7 @@ class LMS_Shop extends Tests{
 			'post_type'       => 'lms_product',			
 			'post_status'     => 'publish'
 		);
+		
 		if($var == "goods_test"){
 			$args['meta_key']='_lms_product_type';
 			$args['meta_value']= "tests";
@@ -56,8 +57,68 @@ class LMS_Shop extends Tests{
 			
 		$products=get_posts($args);
 		return $products;
-		
-	
+	}
+
+	public static function pagination_products(){		
+		global $wp_query;
+		$total = $wp_query->max_num_pages;		
+		if ( $total > 1 )  {
+	     // get the current page
+		    if ( !$current_page = get_query_var('paged') )
+		        $current_page = 1;	    
+		     	// structure of "format" depends on whether we're using pretty permalinks
+		    if( get_option('permalink_structure') ) {
+			     $format = 'page/%#%/';
+		    } else {
+			     $format = 'page/%#%/';
+		    }
+		    echo paginate_links(array(
+		          'base'     => get_pagenum_link(1) . '%_%',
+		          'format'   => $format,
+		          'current'  => $current_page,
+		          'total'    => $total,
+		          'mid_size' => 4,
+		          'type'     => 'list'
+		    ));
+		}
+	}
+
+	public function lms_get_terms(){
+		$terms=array();
+		if(get_bloginfo('version')<4.5){
+			$terms = get_terms( 'product_type', array(
+				'hide_empty' => true,
+			) );
+		}else{
+			$terms = get_terms( array(
+				'taxonomy' => 'product_type',
+				'hide_empty' => true,
+			) );
+		}		
+		foreach ($terms as $key => $value) {
+			if($value->parent>0)
+				$taxes[$key]=$value;
+		}
+		return $taxes;
+	}
+
+	public static function lms_get_terms_products_type(){
+		$terms=array();
+		if(get_bloginfo('version')<4.5){
+			$terms = get_terms( 'product_type', array(
+				'hide_empty' => true,
+			) );
+		}else{
+			$terms = get_terms( array(
+				'taxonomy' => 'product_type',
+				'hide_empty' => true,
+			) );
+		}		
+		foreach ($terms as $key => $value) {
+			if($value->parent>0)
+				$taxes[$key]=$value;
+		}
+		return $taxes;
 	}
 
 

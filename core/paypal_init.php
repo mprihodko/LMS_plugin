@@ -10,7 +10,7 @@ use PayPal\Auth\OAuthTokenCredential;
 	use PayPal\Api\Transaction;
 	use PayPal\Api\Payment;
 	use PayPal\Api\Details;
-
+	use PayPal\Exception\PayPalConnectionException;
 $pp_option=unserialize(get_option( "_lms_pay_pal_settings", false));
 if(isset($pp_option['api_client_id']) && isset($pp_option['api_client_secret'])){ 
 	$oauthCredential = new OAuthTokenCredential($pp_option['api_client_id'], $pp_option['api_client_secret']);
@@ -61,7 +61,22 @@ function pay($data, $total){
 	$payment->setPayer($payer);
 	$payment->setTransactions(array($transaction));
 
-	$payment->create($apiContext);
+	// $payment->create($apiContext);
+	try {
+
+    $payment->create($apiContext);
+
+    // Generate and store hash
+    // Prepare and execute transaction storage
+
+
+
+	} catch (PayPalConnectionException $e) {
+	    // echo $e->getData();
+	    // Perhaps log an error
+	    // header('Location: ../PayPall/error.php');
+	}
+
 	return $payment;
 }
 // var_dump($payment);

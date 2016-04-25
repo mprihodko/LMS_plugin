@@ -13,7 +13,7 @@
 				<li id='group-<?=$group->group_id?>'>
 					<div class="group-name">
 						<strong>
-							<a href='<?=home_url()?>/tests?group_name=<?=$group->group_id?>' >
+							<a href='<?=home_url()?>/examination?group_name=<?=$group->group_id?>' >
 							<?php if($group->remove!=1){ ?>
 								<?=(($group->name)? $group->name : "no-name")?><span id='removed-<?=$group->group_id?>' style='color: #000'></span>
 							<?php }else{ ?>
@@ -35,7 +35,7 @@
 							<a href='javascript:removeGroup(<?=$group->group_id?>);' id='delete-<?=$group->group_id?>' >[remove]</a>
 						<?php } ?>					
 							<a href='<?=home_url()?>/groups/?page=lms_new_group&group=<?=$group->group_id?>' >[edit]</a>
-							<a href='<?=home_url()?>/tests?group_name=<?=$group->group_id?>' >[view]</a>
+							<a href='<?=home_url()?>/examination?group_name=<?=$group->group_id?>' >[view]</a>
 							<a href='#' data-id="<?=$group->group_id?>" class="view_group_reports">[view group reports]</a>
 							<a href='#' data-id="<?=$group->group_id?>" class="copy_group ">[Copy]</a>
 					</div>
